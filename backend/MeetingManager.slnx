@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="MeetingManager.Core/MeetingManager.Core.csproj" />
+  <Project Path="MeetingManager.Domain/MeetingManager.Domain.csproj" />
+  <Project Path="MeetingManager.Infrastructure/MeetingManager.Infrastructure.csproj" />
+  <Project Path="MeetingManager.WebApi/MeetingManager.WebApi.csproj" />
+</Solution>
