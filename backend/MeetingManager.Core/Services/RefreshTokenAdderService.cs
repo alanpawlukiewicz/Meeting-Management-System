@@ -1,4 +1,5 @@
 ﻿using MeetingManager.Core.DTO;
+using MeetingManager.Core.Mappers;
 using MeetingManager.Core.ServiceContracts;
 using MeetingManager.Domain.Entities;
 using MeetingManager.Domain.RepositoryContracts;
@@ -21,15 +22,8 @@ namespace MeetingManager.Core.Services
 
         public async Task AddTokenAsync(RefreshTokenAddRequest request, CancellationToken ct = default)
         {
-            _refreshTokenRepository.Add(new RefreshToken
-            {
-                Id = Guid.NewGuid(),
-                ExpiresAt = request.ExpiresAt,
-                IpAddress = request.IpAddress,
-                TokenHash = _tokenHasher.Hash(request.Token),
-                UserAgent = request.UserAgent,
-                UserId = request.UserId
-            });
+            var hash = _tokenHasher.Hash(request.Token);
+            _refreshTokenRepository.Add(request.ToRefreshToken(hash));
             await _refreshTokenRepository.SaveChangesAsync(ct);
         }
     }

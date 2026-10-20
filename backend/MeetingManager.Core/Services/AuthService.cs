@@ -12,15 +12,21 @@ namespace MeetingManager.Core.Services
         private readonly IPasswordHasher _passwordHasher;
         private readonly IJwtService _jwtService;
         private readonly IRefreshTokenAdderService _refreshTokenAdderService;
+        private readonly IRefreshTokenRepository _refreshTokenRepository;
+        private readonly IRefreshTokenRotationService _refreshTokenRotationService;
+        private readonly ITokenHasher _tokenHasher;
         private const int _maxFailedAccessAttempts = 5;
         private const int _lockoutMinutes = 5;
 
-        public AuthService(IUserRepository userRepository, IPasswordHasher passwordHasher, IJwtService jwtService, IRefreshTokenAdderService refreshTokenAdderService)
+        public AuthService(IUserRepository userRepository, IPasswordHasher passwordHasher, IJwtService jwtService, IRefreshTokenAdderService refreshTokenAdderService, ITokenHasher tokenHasher, IRefreshTokenRepository refreshTokenRepository, IRefreshTokenRotationService refreshTokenRotationService)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
             _jwtService = jwtService;
             _refreshTokenAdderService = refreshTokenAdderService;
+            _tokenHasher = tokenHasher;
+            _refreshTokenRepository = refreshTokenRepository;
+            _refreshTokenRotationService = refreshTokenRotationService;
         }
 
         public async Task<AuthResponse> Login(LoginRequest request, string? ipAddress, string? userAgent, CancellationToken ct = default)
@@ -85,6 +91,46 @@ namespace MeetingManager.Core.Services
             await _userRepository.SaveChangesAsync(ct);
 
             return false;
+        }
+
+        public async Task<AuthResponse> RefreshTokensAsync(string? refreshToken, string? ipAddress, string? userAgent, CancellationToken ct = default)
+        {
+            if (string.IsNullOrWhiteSpace(refreshToken))
+            {
+                throw new InvalidRefreshTokenException("Refresh token is missing from cookies.");
+            }
+
+            var hashedToken = _tokenHasher.Hash(refreshToken);
+
+            var matchingToken = await _refreshTokenRepository.FindTokenByHashAsync(hashedToken, ct);
+
+            if (matchingToken == null || matchingToken.ExpiresAt <= DateTimeOffset.UtcNow)
+            {
+                throw new InvalidRefreshTokenException("Invalid refresh token.");
+            }
+
+            var matchingUser = await _userRepository.FindUserAsync(matchingToken.UserId, ct);
+
+            if (matchingUser == null || (matchingUser.LockoutEnd != null && matchingUser.LockoutEnd > DateTimeOffset.UtcNow))
+            {
+                throw new InvalidRefreshTokenException("Invalid refresh token.");
+            }
+
+            var authResponse = await _jwtService.GenerateJwtToken(matchingUser, ct);
+
+            _refreshTokenRepository.Remove(matchingToken);
+            var refreshTokenAddRequest = new RefreshTokenAddRequest
+            {
+                UserId = matchingUser.Id,
+                UserAgent = userAgent,
+                IpAddress = ipAddress,
+                Token = authResponse.RefreshToken,
+                ExpiresAt = authResponse.RefreshTokenExpiration
+            };
+
+            await _refreshTokenRotationService.RotateAsync(matchingToken, refreshTokenAddRequest, ct);
+
+            return authResponse;
         }
     }
 }

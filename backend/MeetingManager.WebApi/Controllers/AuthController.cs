@@ -1,6 +1,9 @@
 ﻿using MeetingManager.Core.DTO;
+using MeetingManager.Core.Exceptions;
 using MeetingManager.Core.ServiceContracts;
+using MeetingManager.Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
@@ -49,6 +52,31 @@ namespace MeetingManager.WebApi.Controllers
             Response.Cookies.Delete("refreshToken", RefreshCookieOptions());
 
             return NoContent();
+        }
+
+        [AllowAnonymous]
+        [HttpPost("refresh")]
+        public async Task<ActionResult<JwtTokenResponse>> Refresh(CancellationToken ct)
+        {
+            string? refreshToken = Request.Cookies["refreshToken"];
+            var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+            var userAgent = HttpContext.Request.Headers.UserAgent.ToString();
+            try
+            {
+                var response = await _authService.RefreshTokensAsync(refreshToken, ipAddress, userAgent, ct);
+
+                Response.Cookies.Append("refreshToken", response.RefreshToken!, RefreshCookieOptions(response.RefreshTokenExpiration));
+                return new JwtTokenResponse
+                {
+                    Token = response.JwtToken,
+                    ExpirationDate = response.JwtTokenExpiration
+                };
+            }
+            catch (InvalidRefreshTokenException)
+            {
+                Response.Cookies.Delete("refreshToken", RefreshCookieOptions());
+                throw;
+            }
         }
 
         private static CookieOptions RefreshCookieOptions(DateTimeOffset? expires = null) { 

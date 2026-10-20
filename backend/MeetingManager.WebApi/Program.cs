@@ -101,6 +101,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddScoped<IRefreshTokenAdderService, RefreshTokenAdderService>();
 builder.Services.AddScoped<IRefreshTokenDeleterService, RefreshTokenDeleterService>();
+builder.Services.AddScoped<IRefreshTokenRotationService, RefreshTokenRotationService>();
 
 builder.Services.AddScoped<IJwtService, JwtService>();
 

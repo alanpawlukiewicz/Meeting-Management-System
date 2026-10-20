@@ -37,6 +37,7 @@ namespace MeetingManager.WebApi.Exceptions
                 ConflictException => (StatusCodes.Status409Conflict, "Conflict"),
                 TooManyRequestsException => (StatusCodes.Status429TooManyRequests, "Too many requests"),
                 InvalidCredentialsException => (StatusCodes.Status401Unauthorized, "Invalid credentials"),
+                InvalidRefreshTokenException => (StatusCodes.Status401Unauthorized, "Invalid refresh token"),
 
                 ArgumentException => (StatusCodes.Status400BadRequest, "Invalid argument"),
                 UnauthorizedAccessException => (StatusCodes.Status401Unauthorized, "Unauthorized"),
