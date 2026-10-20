@@ -1,13 +1,20 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MeetingManager.Domain.Entities
 {
-    public class UserRole : IdentityUserRole<Guid>
+    public class UserRole
     {
-        public virtual User User { get; set; } = default!;
-        public virtual Role Role { get; set; } = default!;
+        [Key]
+        public Guid Id { get; set; }
+        [Required]
+        public Guid UserId { get; set; }
+        [Required]
+        public Guid RoleId { get; set; }
+
+        [ForeignKey(nameof(UserId))]
+        public User? User { get; set; }
+        [ForeignKey(nameof(RoleId))]
+        public Role? Role { get; set; }
     }
 }

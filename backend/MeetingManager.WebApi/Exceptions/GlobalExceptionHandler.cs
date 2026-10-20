@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
+﻿using MeetingManager.Core.Exceptions;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
 
 namespace MeetingManager.WebApi.Exceptions
 {
@@ -32,6 +32,10 @@ namespace MeetingManager.WebApi.Exceptions
         private static (int StatusCode, string Title) MapException(Exception exception) =>
             exception switch
             {
+                ValidationException => (StatusCodes.Status400BadRequest, "Validation error"),
+                NotFoundException => (StatusCodes.Status404NotFound, "Resource not found"),
+                ConflictException => (StatusCodes.Status409Conflict, "Conflict"),
+
                 ArgumentException => (StatusCodes.Status400BadRequest, "Invalid argument"),
                 UnauthorizedAccessException => (StatusCodes.Status401Unauthorized, "Unauthorized"),
                 KeyNotFoundException => (StatusCodes.Status404NotFound, "Resource not found"),

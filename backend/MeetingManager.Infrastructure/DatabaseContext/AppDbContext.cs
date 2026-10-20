@@ -1,32 +1,18 @@
 ﻿using MeetingManager.Domain.Entities;
 using MeetingManager.Domain.Enums;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace MeetingManager.Infrastructure.DatabaseContext
 {
-    public class AppDbContext : IdentityDbContext<
-    User,
-    Role,
-    Guid,
-    IdentityUserClaim<Guid>,
-    UserRole,
-    IdentityUserLogin<Guid>,
-    IdentityRoleClaim<Guid>,
-    IdentityUserToken<Guid>>
+    public class AppDbContext : DbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }
 
-        public DbSet<User> AppUsers => Set<User>();
-        public DbSet<Role> AppRoles => Set<Role>();
-        public DbSet<UserRole> AppUserRoles => Set<UserRole>();
+        public DbSet<User> Users => Set<User>();
+        public DbSet<Role> Roles => Set<Role>();
+        public DbSet<UserRole> UserRoles => Set<UserRole>();
         public DbSet<Meeting> Meetings => Set<Meeting>();
         public DbSet<MeetingParticipant> MeetingParticipants => Set<MeetingParticipant>();
         public DbSet<UserAvailability> UserAvailabilities => Set<UserAvailability>();
@@ -39,21 +25,9 @@ namespace MeetingManager.Infrastructure.DatabaseContext
             modelBuilder.HasPostgresEnum<AttendanceStatus>();
             modelBuilder.HasPostgresEnum<Domain.Enums.DayOfWeek>();
 
-            modelBuilder.Ignore<IdentityUserClaim<Guid>>();
-            modelBuilder.Ignore<IdentityUserLogin<Guid>>();
-            modelBuilder.Ignore<IdentityUserToken<Guid>>();
-            modelBuilder.Ignore<IdentityRoleClaim<Guid>>();
-
             modelBuilder.Entity<User>(entity =>
             {
                 entity.ToTable("users");
-                entity.Ignore(u => u.PhoneNumberConfirmed);
-                entity.Ignore(u => u.TwoFactorEnabled);
-                entity.Ignore(u => u.PhoneNumber);
-                entity.Ignore(u => u.Email);
-                entity.Ignore(u => u.EmailConfirmed);
-                entity.Ignore(u => u.ConcurrencyStamp);
-                entity.Ignore(u => u.SecurityStamp);
             });
 
             modelBuilder.Entity<Role>(entity =>
@@ -86,12 +60,6 @@ namespace MeetingManager.Infrastructure.DatabaseContext
             {
                 entity.ToTable("user_time_offs");
             });
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            base.OnConfiguring(optionsBuilder);
-            optionsBuilder.ConfigureWarnings(w => w.Ignore(CoreEventId.MappedEntityTypeIgnoredWarning));
         }
     }
 }

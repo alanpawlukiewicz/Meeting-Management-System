@@ -1,10 +1,11 @@
-using MeetingManager.Domain.Entities;
+using MeetingManager.Core.ServiceContracts;
+using MeetingManager.Core.Services;
 using MeetingManager.Domain.Enums;
+using MeetingManager.Domain.RepositoryContracts;
 using MeetingManager.Infrastructure.DatabaseContext;
+using MeetingManager.Infrastructure.Repositories;
 using MeetingManager.WebApi.Exceptions;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.RateLimiting;
 
@@ -16,11 +17,6 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
-builder.Services.AddIdentity<User, Role>()
-    .AddEntityFrameworkStores<AppDbContext>()
-    .AddUserStore<UserStore<User, Role, AppDbContext, Guid, IdentityUserClaim<Guid>, UserRole, IdentityUserLogin<Guid>, IdentityUserToken<Guid>, IdentityRoleClaim<Guid>>>()
-    .AddRoleStore<RoleStore<Role, AppDbContext, Guid, UserRole, IdentityRoleClaim<Guid>>>();
 
 builder.Services.AddRateLimiter(options =>
 {
@@ -57,6 +53,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         })
     .UseSnakeCaseNamingConvention();
 });
+
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+builder.Services.AddScoped<IUserRegistrationService, UserRegistrationService>();
 
 var app = builder.Build();
 

@@ -1,5 +1,4 @@
-﻿using System;
-using MeetingManager.Domain.Enums;
+﻿using MeetingManager.Domain.Enums;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
