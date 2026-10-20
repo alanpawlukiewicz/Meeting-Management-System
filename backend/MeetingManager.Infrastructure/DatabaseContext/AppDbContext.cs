@@ -28,6 +28,7 @@ namespace MeetingManager.Infrastructure.DatabaseContext
             modelBuilder.Entity<User>(entity =>
             {
                 entity.ToTable("users");
+                entity.HasIndex(u => u.UserName).IsUnique();
             });
 
             modelBuilder.Entity<Role>(entity =>
@@ -59,6 +60,11 @@ namespace MeetingManager.Infrastructure.DatabaseContext
             modelBuilder.Entity<UserTimeOff>(entity =>
             {
                 entity.ToTable("user_time_offs");
+            });
+
+            modelBuilder.Entity<RefreshToken>(entity =>
+            {
+                entity.ToTable("refresh_tokens");
             });
         }
     }

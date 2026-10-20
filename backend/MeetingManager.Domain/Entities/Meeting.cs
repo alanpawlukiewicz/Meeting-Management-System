@@ -5,6 +5,7 @@ namespace MeetingManager.Domain.Entities
 {
     public class Meeting
     {
+        [Key]
         public Guid Id { get; set; }
         [Required]
         public Guid CreatorId { get; set; }

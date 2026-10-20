@@ -35,6 +35,8 @@ namespace MeetingManager.WebApi.Exceptions
                 ValidationException => (StatusCodes.Status400BadRequest, "Validation error"),
                 NotFoundException => (StatusCodes.Status404NotFound, "Resource not found"),
                 ConflictException => (StatusCodes.Status409Conflict, "Conflict"),
+                TooManyRequestsException => (StatusCodes.Status429TooManyRequests, "Too many requests"),
+                InvalidCredentialsException => (StatusCodes.Status401Unauthorized, "Invalid credentials"),
 
                 ArgumentException => (StatusCodes.Status400BadRequest, "Invalid argument"),
                 UnauthorizedAccessException => (StatusCodes.Status401Unauthorized, "Unauthorized"),

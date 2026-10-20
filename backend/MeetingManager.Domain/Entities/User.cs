@@ -4,12 +4,15 @@ namespace MeetingManager.Domain.Entities
 {
     public class User
     {
+        [Key]
         public Guid Id { get; set; }
-        [MaxLength(256)]
+        [MaxLength(200)]
+        [Required]
         public string UserName { get; set; } = null!;
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
-        public string? PasswordHash { get; set; }
+        [Required]
+        public string PasswordHash { get; set; } = null!;
         public DateTimeOffset? LockoutEnd { get; set; }
         public int AccessFailedCount { get; set; } = 0;
 

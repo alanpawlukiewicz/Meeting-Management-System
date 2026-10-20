@@ -1,0 +1,36 @@
+﻿using MeetingManager.Core.DTO;
+using MeetingManager.Core.ServiceContracts;
+using MeetingManager.Domain.Entities;
+using MeetingManager.Domain.RepositoryContracts;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace MeetingManager.Core.Services
+{
+    public class RefreshTokenAdderService : IRefreshTokenAdderService
+    {
+        private readonly IRefreshTokenRepository _refreshTokenRepository;
+        private readonly ITokenHasher _tokenHasher;
+
+        public RefreshTokenAdderService(IRefreshTokenRepository refreshTokenRepository, ITokenHasher tokenHasher)
+        {
+            _refreshTokenRepository = refreshTokenRepository;
+            _tokenHasher = tokenHasher;
+        }
+
+        public async Task AddTokenAsync(RefreshTokenAddRequest request, CancellationToken ct = default)
+        {
+            _refreshTokenRepository.Add(new RefreshToken
+            {
+                Id = Guid.NewGuid(),
+                ExpiresAt = request.ExpiresAt,
+                IpAddress = request.IpAddress,
+                TokenHash = _tokenHasher.Hash(request.Token),
+                UserAgent = request.UserAgent,
+                UserId = request.UserId
+            });
+            await _refreshTokenRepository.SaveChangesAsync(ct);
+        }
+    }
+}

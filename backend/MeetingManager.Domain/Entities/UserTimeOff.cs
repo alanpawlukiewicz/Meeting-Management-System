@@ -4,6 +4,7 @@ namespace MeetingManager.Domain.Entities
 {
     public class UserTimeOff
     {
+        [Key]
         public Guid Id { get; set; }
         [Required]
         public Guid UserId { get; set; }

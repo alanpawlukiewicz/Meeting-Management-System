@@ -13,4 +13,9 @@
     {
         public ConflictException(string message) : base(message) { }
     }
+
+    public class TooManyRequestsException : AppException
+    {
+        public TooManyRequestsException(string message) : base(message) { }
+    }
 }

@@ -103,6 +103,43 @@ namespace MeetingManager.Infrastructure.Migrations
                     b.ToTable("meeting_participants", (string)null);
                 });
 
+            modelBuilder.Entity("MeetingManager.Domain.Entities.RefreshToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTimeOffset>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("expires_at");
+
+                    b.Property<string>("IpAddress")
+                        .HasColumnType("text")
+                        .HasColumnName("ip_address");
+
+                    b.Property<string>("TokenHash")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("token_hash");
+
+                    b.Property<string>("UserAgent")
+                        .HasColumnType("text")
+                        .HasColumnName("user_agent");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_refresh_tokens");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_refresh_tokens_user_id");
+
+                    b.ToTable("refresh_tokens", (string)null);
+                });
+
             modelBuilder.Entity("MeetingManager.Domain.Entities.Role", b =>
                 {
                     b.Property<Guid>("Id")
@@ -146,17 +183,22 @@ namespace MeetingManager.Infrastructure.Migrations
                         .HasColumnName("lockout_end");
 
                     b.Property<string>("PasswordHash")
+                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("password_hash");
 
                     b.Property<string>("UserName")
                         .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
                         .HasColumnName("user_name");
 
                     b.HasKey("Id")
                         .HasName("pk_users");
+
+                    b.HasIndex("UserName")
+                        .IsUnique()
+                        .HasDatabaseName("ix_users_user_name");
 
                     b.ToTable("users", (string)null);
                 });
@@ -282,6 +324,18 @@ namespace MeetingManager.Infrastructure.Migrations
                         .HasConstraintName("fk_meeting_participants_users_user_id");
 
                     b.Navigation("Meeting");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MeetingManager.Domain.Entities.RefreshToken", b =>
+                {
+                    b.HasOne("MeetingManager.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_refresh_tokens_users_user_id");
 
                     b.Navigation("User");
                 });

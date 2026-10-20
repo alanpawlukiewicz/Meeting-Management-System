@@ -20,5 +20,15 @@ namespace MeetingManager.Infrastructure.Repositories
         {
             return await DbSet.FirstOrDefaultAsync(u => u.UserName == login, ct);
         }
+
+        public async Task<User?> FindUserWithRolesAsync(Guid userId, CancellationToken ct = default)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Include(u => u.UserRoles)
+                    .ThenInclude(ur => ur.Role)
+                .AsSplitQuery()
+                .FirstOrDefaultAsync(u => u.Id == userId, ct);
+        }
     }
 }

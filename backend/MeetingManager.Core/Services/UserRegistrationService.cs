@@ -10,10 +10,12 @@ namespace MeetingManager.Core.Services
     public class UserRegistrationService : IUserRegistrationService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IPasswordHasher _passwordHasher;
 
-        public UserRegistrationService(IUserRepository userRepository)
+        public UserRegistrationService(IUserRepository userRepository, IPasswordHasher passwordHasher)
         {
             _userRepository = userRepository;
+            _passwordHasher = passwordHasher;
         }
 
         public async Task<UserDto> RegisterUserAsync(UserRegisterRequest request, CancellationToken ct = default)
@@ -32,7 +34,7 @@ namespace MeetingManager.Core.Services
                 UserName = request.UserName,
                 FirstName = request.FirstName,
                 LastName = request.LastName,
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password)
+                PasswordHash = _passwordHasher.Hash(request.Password)
             };
 
             _userRepository.Add(newUser);
