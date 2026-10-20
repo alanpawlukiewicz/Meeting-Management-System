@@ -100,6 +100,7 @@ builder.Services.AddScoped<IUserRegistrationService, UserRegistrationService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddScoped<IRefreshTokenAdderService, RefreshTokenAdderService>();
+builder.Services.AddScoped<IRefreshTokenDeleterService, RefreshTokenDeleterService>();
 
 builder.Services.AddScoped<IJwtService, JwtService>();
 

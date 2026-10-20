@@ -9,14 +9,16 @@ namespace MeetingManager.WebApi.Controllers
     public class AuthController : DefaultControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly IRefreshTokenDeleterService _refreshTokenDeleterService;
 
-        public AuthController(IAuthService authService)
+        public AuthController(IAuthService authService, IRefreshTokenDeleterService refreshTokenDeleterService)
         {
             _authService = authService;
+            _refreshTokenDeleterService = refreshTokenDeleterService;
         }
 
-        [HttpPost("login")]
         [AllowAnonymous]
+        [HttpPost("login")]
         public async Task<ActionResult<JwtTokenResponse>> Login(LoginRequest request, CancellationToken ct)
         {
             var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
@@ -24,18 +26,39 @@ namespace MeetingManager.WebApi.Controllers
 
             var response = await _authService.Login(request, ipAddress, userAgent, ct);
 
-            Response.Cookies.Append("refreshToken", response.RefreshToken!, new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Lax,
-                Expires = response.RefreshTokenExpiration,
-                Path = "/api/auth",
-            });
+            Response.Cookies.Append("refreshToken", response.RefreshToken!, RefreshCookieOptions(response.RefreshTokenExpiration));
             return new JwtTokenResponse
             {
                 Token = response.JwtToken,
                 ExpirationDate = response.JwtTokenExpiration
+            };
+        }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout(CancellationToken ct)
+        {
+            string? refreshToken = Request.Cookies["refreshToken"];
+
+            if (string.IsNullOrWhiteSpace(refreshToken))
+            {
+                return NoContent();
+            }
+
+            await _refreshTokenDeleterService.DeleteTokenAsync(refreshToken, ct);
+
+            Response.Cookies.Delete("refreshToken", RefreshCookieOptions());
+
+            return NoContent();
+        }
+
+        private static CookieOptions RefreshCookieOptions(DateTimeOffset? expires = null) { 
+            return new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Lax,
+                Path = "/api/auth",
+                Expires = expires
             };
         }
     }
