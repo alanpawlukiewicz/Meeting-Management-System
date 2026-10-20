@@ -108,6 +108,8 @@ builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddSingleton<IPasswordHasher, BCryptPasswordHasher>();
 builder.Services.AddSingleton<ITokenHasher, Sha256TokenHasher>();
 
+builder.Services.AddHostedService<RefreshTokenCleanupService>();
+
 var app = builder.Build();
 
 app.UseForwardedHeaders(new ForwardedHeadersOptions

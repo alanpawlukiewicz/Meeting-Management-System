@@ -18,5 +18,12 @@ namespace MeetingManager.Infrastructure.Repositories
         {
             return await DbSet.FirstOrDefaultAsync(t => t.TokenHash == hash, ct);
         }
+
+        public async Task DeleteExpiredTokensAsync(CancellationToken ct = default)
+        {
+            await DbSet
+                .Where(t => t.ExpiresAt <= DateTimeOffset.UtcNow)
+                .ExecuteDeleteAsync(ct);
+        }
     }
 }
