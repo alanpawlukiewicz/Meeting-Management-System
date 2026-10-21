@@ -14,5 +14,16 @@ namespace MeetingManager.Core.Mappers
                 UserName = user.UserName!
             };
         }
+
+        public static UserProfile ToUserProfile(this User user)
+        {
+            return new UserProfile
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Roles = user.UserRoles.Select(ur => ur.Role!.Name).ToList(),
+                UserName = user.UserName
+            };
+        }
     }
 }

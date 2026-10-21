@@ -9,8 +9,11 @@ namespace MeetingManager.WebApi.Extensions
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             services.AddScoped<IUserRegistrationService, UserRegistrationService>();
+            services.AddScoped<IUserGetterService, UserGetterService>();
 
             services.AddScoped<IAuthService, AuthService>();
+
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
 
             services.AddScoped<IRefreshTokenAdderService, RefreshTokenAdderService>();
             services.AddScoped<IRefreshTokenDeleterService, RefreshTokenDeleterService>();
