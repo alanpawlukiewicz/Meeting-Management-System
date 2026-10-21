@@ -1,11 +1,8 @@
 ﻿using MeetingManager.Core.DTO;
 using MeetingManager.Core.Exceptions;
 using MeetingManager.Core.ServiceContracts;
-using MeetingManager.Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 
 namespace MeetingManager.WebApi.Controllers
 {
@@ -79,7 +76,8 @@ namespace MeetingManager.WebApi.Controllers
             }
         }
 
-        private static CookieOptions RefreshCookieOptions(DateTimeOffset? expires = null) { 
+        private static CookieOptions RefreshCookieOptions(DateTimeOffset? expires = null)
+        {
             return new CookieOptions
             {
                 HttpOnly = true,

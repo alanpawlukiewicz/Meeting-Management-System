@@ -1,0 +1,30 @@
+﻿using MeetingManager.Core.ServiceContracts;
+using MeetingManager.Core.Services;
+using MeetingManager.Infrastructure.Services;
+
+namespace MeetingManager.WebApi.Extensions
+{
+    public static class ServiceExtensions
+    {
+        public static IServiceCollection AddServices(this IServiceCollection services)
+        {
+            services.AddScoped<IUserRegistrationService, UserRegistrationService>();
+
+            services.AddScoped<IAuthService, AuthService>();
+
+            services.AddScoped<IRefreshTokenAdderService, RefreshTokenAdderService>();
+            services.AddScoped<IRefreshTokenDeleterService, RefreshTokenDeleterService>();
+            services.AddScoped<IRefreshTokenRotationService, RefreshTokenRotationService>();
+
+            services.AddScoped<IJwtService, JwtService>();
+
+            services.AddSingleton<IPasswordHasher, BCryptPasswordHasher>();
+            services.AddSingleton<ITokenHasher, Sha256TokenHasher>();
+
+            // Background services
+            services.AddHostedService<RefreshTokenCleanupService>();
+
+            return services;
+        }
+    }
+}
