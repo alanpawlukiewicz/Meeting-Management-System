@@ -1,6 +1,7 @@
 ﻿using MeetingManager.Core.DTO;
 using MeetingManager.Core.Exceptions;
 using MeetingManager.Core.ServiceContracts;
+using MeetingManager.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,11 +11,30 @@ namespace MeetingManager.WebApi.Controllers
     {
         private readonly IAuthService _authService;
         private readonly IRefreshTokenDeleterService _refreshTokenDeleterService;
+        private readonly IUserRegistrationService _userRegistrationService;
 
-        public AuthController(IAuthService authService, IRefreshTokenDeleterService refreshTokenDeleterService)
+        public AuthController(IAuthService authService, IRefreshTokenDeleterService refreshTokenDeleterService, IUserRegistrationService userRegistrationService)
         {
             _authService = authService;
             _refreshTokenDeleterService = refreshTokenDeleterService;
+            _userRegistrationService = userRegistrationService;
+        }
+
+        [AllowAnonymous]
+        [HttpPost("register")]
+        public async Task<ActionResult<JwtTokenResponse>> RegisterUser(UserRegisterRequest request, CancellationToken ct)
+        {
+            var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+            var userAgent = HttpContext.Request.Headers.UserAgent.ToString();
+
+            var response = await _userRegistrationService.RegisterUserAsync(request, ipAddress, userAgent, ct);
+
+            Response.Cookies.Append("refreshToken", response.RefreshToken!, RefreshCookieOptions(response.RefreshTokenExpiration));
+            return new JwtTokenResponse
+            {
+                Token = response.JwtToken,
+                ExpirationDate = response.JwtTokenExpiration
+            };
         }
 
         [AllowAnonymous]

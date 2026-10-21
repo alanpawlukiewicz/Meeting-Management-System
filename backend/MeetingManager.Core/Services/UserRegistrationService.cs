@@ -4,6 +4,7 @@ using MeetingManager.Core.Mappers;
 using MeetingManager.Core.ServiceContracts;
 using MeetingManager.Domain.Entities;
 using MeetingManager.Domain.RepositoryContracts;
+using System.Net;
 
 namespace MeetingManager.Core.Services
 {
@@ -11,14 +12,18 @@ namespace MeetingManager.Core.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasher _passwordHasher;
+        private readonly IJwtService _jwtService;
+        private readonly IRefreshTokenAdderService _refreshTokenAdderService;
 
-        public UserRegistrationService(IUserRepository userRepository, IPasswordHasher passwordHasher)
+        public UserRegistrationService(IUserRepository userRepository, IPasswordHasher passwordHasher, IJwtService jwtService, IRefreshTokenAdderService refreshTokenAdderService)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
+            _jwtService = jwtService;
+            _refreshTokenAdderService = refreshTokenAdderService;
         }
 
-        public async Task<UserDto> RegisterUserAsync(UserRegisterRequest request, CancellationToken ct = default)
+        public async Task<AuthResponse> RegisterUserAsync(UserRegisterRequest request, string? ipAddress, string? userAgent, CancellationToken ct = default)
         {
             var matchingUser = await _userRepository.FindUserByLoginAsync(request.UserName, ct);
 
@@ -41,7 +46,20 @@ namespace MeetingManager.Core.Services
 
             await _userRepository.SaveChangesAsync(ct);
 
-            return newUser.ToUserDto();
+            var authResponse = await _jwtService.GenerateJwtToken(newUser, ct);
+
+            var refreshTokenAddRequest = new RefreshTokenAddRequest
+            {
+                UserId = newUser.Id,
+                UserAgent = userAgent,
+                IpAddress = ipAddress,
+                Token = authResponse.RefreshToken,
+                ExpiresAt = authResponse.RefreshTokenExpiration
+            };
+
+            await _refreshTokenAdderService.AddTokenAsync(refreshTokenAddRequest, ct);
+
+            return authResponse;
         }
     }
 }

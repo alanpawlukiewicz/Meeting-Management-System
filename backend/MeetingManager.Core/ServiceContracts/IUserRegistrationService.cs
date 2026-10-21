@@ -4,6 +4,6 @@ namespace MeetingManager.Core.ServiceContracts
 {
     public interface IUserRegistrationService
     {
-        Task<UserDto> RegisterUserAsync(UserRegisterRequest request, CancellationToken ct = default);
+        Task<AuthResponse> RegisterUserAsync(UserRegisterRequest request, string? ipAddress, string? userAgent, CancellationToken ct = default);
     }
 }
