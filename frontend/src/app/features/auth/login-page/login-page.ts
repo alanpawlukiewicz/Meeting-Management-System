@@ -38,6 +38,8 @@ export class LoginPage {
     if (this.loginForm.invalid) {
       return;
     }
+    this.loginErrorSignal.set(null);
+    
     const request: LoginRequest = {
       password: this.loginForm.controls.password.getRawValue() ?? '',
       userName: this.loginForm.controls.userName.getRawValue() ?? ''
@@ -45,9 +47,6 @@ export class LoginPage {
     this.authService.login(request)
     .pipe(takeUntilDestroyed(this.destroyRef))
     .subscribe({
-      next: () => {
-        this.router.navigate(['home']);
-      },
       error: (err: HttpErrorResponse) => {
         this.loginErrorSignal.set(err.error["detail"]);
       }
