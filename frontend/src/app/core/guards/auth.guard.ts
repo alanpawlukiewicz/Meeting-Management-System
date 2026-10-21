@@ -12,7 +12,7 @@ export const authGuard = (requiredRole: Role | null = null): CanActivateFn => {
 
     const token: string | null = authService.getToken()
 
-    if (Role === null && token) {
+    if (requiredRole === null && token) {
       return true;
     }
 
