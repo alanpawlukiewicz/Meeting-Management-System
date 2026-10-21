@@ -13,3 +13,10 @@ export interface UserProfile {
 export enum Role {
     Admin
 }
+
+export interface RegisterRequest {
+    userName: string;
+    firstName: string | null;
+    lastName: string | null;
+    password: string;
+}

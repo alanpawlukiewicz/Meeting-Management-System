@@ -1,1 +1,60 @@
-<p>register-page works!</p>
+<div class="flex items-center justify-center w-full">
+    <mat-card class="px-10 py-4 m-10 sm:min-w-120">
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="grid grid-rows-6 grid-cols-1 gap-2">
+            <span class="text-2xl font-semibold flex items-center justify-center">Register</span>
+            <mat-form-field appearance="outline">
+                <mat-label>User Name</mat-label>
+                <input matInput formControlName="userName">
+                @if (registerForm.controls.userName.hasError('required'))
+                {
+                <mat-error>User name is required.</mat-error>
+                }
+            </mat-form-field>
+            <div class="grid grid-rows-1 grid-cols-2 gap-2">
+                <mat-form-field appearance="outline">
+                    <mat-label>First Name</mat-label>
+                    <input matInput formControlName="firstName">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Last Name</mat-label>
+                    <input matInput formControlName="lastName">
+                </mat-form-field>
+            </div>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Password</mat-label>
+                <input matInput formControlName="password" type="password">
+                @if (registerForm.controls.password.hasError('required'))
+                {
+                <mat-error>Password is required.</mat-error>
+                }
+                @if (registerForm.controls.password.hasError('pattern'))
+                {
+                <mat-error>Password must contain a digit, small and big letter.</mat-error>
+                }
+                @if (registerForm.controls.password.hasError('minlength'))
+                {
+                <mat-error>Password must contain at least 8 characters.</mat-error>
+                }
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Confirm Password</mat-label>
+                <input matInput formControlName="confirmPassword" type="password">
+                @if (registerForm.controls.confirmPassword.hasError('required'))
+                {
+                <mat-error>Confirm password is required.</mat-error>
+                }
+                @if (registerForm.controls.confirmPassword.hasError('passwordMismatch'))
+                {
+                <mat-error>Confirm password must be equal to password.</mat-error>
+                }
+            </mat-form-field>
+            <button matButton="filled">Register</button>
+        </form>
+        @if(registerErrorSignal() !== null)
+        {
+        <span class="text-sm text-error flex justify-center items-center pb-4 pt-2">{{registerErrorSignal()}}</span>
+        }
+        <a matButton="text" routerLink="/login" class="text-xs!">Login instead</a>
+    </mat-card>
+</div>

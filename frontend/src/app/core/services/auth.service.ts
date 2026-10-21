@@ -5,7 +5,7 @@ import { catchError, finalize, map, Observable, of, shareReplay, switchMap, tap 
 import { Router } from '@angular/router';
 import { TokenModel } from '../models/token.model';
 import { UserService } from './user.service';
-import { LoginRequest, UserProfile } from '../models/auth.models';
+import { LoginRequest, RegisterRequest, UserProfile } from '../models/auth.models';
 
 @Service()
 export class AuthService {
@@ -41,7 +41,7 @@ export class AuthService {
         this.accessToken.set(null);
         this.expiresAt = null;
     }
-    
+
     refreshToken(): Observable<TokenModel> {
         this.refreshInFlight$ ??= this.http
             .post<TokenModel>(`${this.apiUrl}/auth/refresh`, {}, { withCredentials: true })
@@ -52,6 +52,16 @@ export class AuthService {
             );
 
         return this.refreshInFlight$;
+    }
+
+    register(registerRequest: RegisterRequest): Observable<UserProfile> {
+        return this.http
+            .post<TokenModel>(`${this.apiUrl}/auth/register`, registerRequest, { withCredentials: true })
+            .pipe(
+                tap((model) => this.setToken(model)),
+                switchMap(() => this.userService.loadCurrentUser()),
+                tap(() => this.router.navigate(['/home'])),
+            );
     }
 
     login(loginRequest: LoginRequest): Observable<UserProfile> {
