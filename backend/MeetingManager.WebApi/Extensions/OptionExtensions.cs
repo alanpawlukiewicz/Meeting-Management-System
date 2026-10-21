@@ -8,6 +8,7 @@ namespace MeetingManager.WebApi.Extensions
         {
             services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.SectionName));
             services.Configure<RefreshTokenOptions>(configuration.GetSection(RefreshTokenOptions.SectionName));
+            services.Configure<CorsOptions>(configuration.GetSection(CorsOptions.SectionName));
 
             return services;
         }

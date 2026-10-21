@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.HttpOverrides;
+﻿using MeetingManager.Infrastructure.Configuration;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace MeetingManager.WebApi.Extensions
 {
@@ -6,6 +7,8 @@ namespace MeetingManager.WebApi.Extensions
     {
         public static WebApplication UseApiPipeline(this WebApplication app)
         {
+            var corsOptions = app.Configuration.GetSection(CorsOptions.SectionName).Get<CorsOptions>()!;
+
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
@@ -24,6 +27,8 @@ namespace MeetingManager.WebApi.Extensions
             app.UseExceptionHandler();
 
             app.UseRouting();
+
+            app.UseCors(corsOptions.FrontendCorsName);
 
             app.UseRateLimiter();
 

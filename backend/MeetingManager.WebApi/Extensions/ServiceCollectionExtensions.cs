@@ -22,6 +22,7 @@ namespace MeetingManager.WebApi.Extensions
             services.AddExceptionHandler<GlobalExceptionHandler>();
             services.AddProblemDetails();
             services.AddConfigOptions(configuration);
+            services.AddCorsConfiguration(configuration);
             return services;
         }
 
