@@ -1,1 +1,29 @@
-<p>login-page works!</p>
+<div class="flex items-center justify-center w-full">
+    <mat-card class="px-10 py-4 m-10 sm:min-w-120">
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="grid grid-rows-4 grid-cols-1 gap-2">
+            <span class="text-2xl font-semibold flex items-center justify-center">Log in</span>
+            <mat-form-field appearance="outline">
+                <mat-label>Login</mat-label>
+                <input matInput formControlName="userName">
+                @if (loginForm.controls.userName.hasError('required'))
+                {
+                    <mat-error>User name is required.</mat-error>
+                }
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Password</mat-label>
+                <input matInput formControlName="password" type="password">
+                @if (loginForm.controls.password.hasError('required'))
+                {
+                    <mat-error>Password is required.</mat-error>
+                }
+            </mat-form-field>
+            <button matButton="filled">Login</button>
+        </form>
+        @if(loginErrorSignal() !== null)
+        {
+            <span class="text-sm text-error flex justify-center items-center pb-4 pt-2">{{loginErrorSignal()}}</span>
+        }
+        <a matButton="text" routerLink="register" class="text-xs!">Register instead</a>
+    </mat-card>
+</div>
