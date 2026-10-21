@@ -19,7 +19,7 @@ namespace MeetingManager.Infrastructure.Services
             get
             {
                 var claim = _httpContextAccessor.HttpContext?.User
-                    .FindFirst(JwtRegisteredClaimNames.Sub)
+                    .FindFirst(ClaimTypes.NameIdentifier)
                     ?? throw new UnauthorizedAccessException("No logged in user available.");
 
                 return Guid.Parse(claim.Value);
