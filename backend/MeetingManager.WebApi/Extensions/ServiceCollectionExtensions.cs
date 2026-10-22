@@ -30,7 +30,6 @@ namespace MeetingManager.WebApi.Extensions
             this IServiceCollection services, IConfiguration configuration)
         {
             services.AddJwtAuth(configuration);
-
             services.AddCustomRateLimiter();
 
             return services;
@@ -40,6 +39,7 @@ namespace MeetingManager.WebApi.Extensions
             this IServiceCollection services, IConfiguration configuration)
         {
             services.AddCustomDbContext(configuration);
+            services.AddMemoryCache();
             services.AddRepositories();
 
             return services;

@@ -1,6 +1,9 @@
 ﻿using MeetingManager.Core.ServiceContracts;
 using MeetingManager.Core.Services;
+using MeetingManager.Infrastructure.Authorization.Handlers;
+using MeetingManager.Infrastructure.Authorization.PolicyProviders;
 using MeetingManager.Infrastructure.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MeetingManager.WebApi.Extensions
 {
@@ -29,6 +32,10 @@ namespace MeetingManager.WebApi.Extensions
 
             services.AddSingleton<IPasswordHasher, BCryptPasswordHasher>();
             services.AddSingleton<ITokenHasher, Sha256TokenHasher>();
+
+            services.AddScoped<IRoleAuthService, RoleAuthService>();
+            services.AddSingleton<IAuthorizationPolicyProvider, RolePolicyProvider>();
+            services.AddScoped<IAuthorizationHandler, RoleHandler>();
 
             // Background services
             services.AddHostedService<RefreshTokenCleanupService>();
