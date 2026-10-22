@@ -1,12 +1,23 @@
 <mat-toolbar>
-    <span class="color-red-500!">My App</span>
+    <span class="color-red-500!">Meeting Manager</span>
     <span class="grow!"></span>
-    <button matIconButton class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
-        <mat-icon>favorite</mat-icon>
+    @if (userService.isLoggedIn())
+    {
+    <a matIconButton matTooltip="Set your availability" routerLink="/availability">
+        <mat-icon>event_available</mat-icon>
+    </a>
+    <a matIconButton matTooltip="Home" routerLink="/home">
+        <mat-icon>home</mat-icon>
+    </a>
+    <button matIconButton matTooltip="Log out" (click)="logOut()">
+        <mat-icon>logout</mat-icon>
     </button>
-    <button matIconButton class="example-icon" aria-label="Example icon-button with share icon">
-        <mat-icon>share</mat-icon>
-    </button>
+    }
+    @else {
+    <a matIconButton matTooltip="Log in" routerLink="/login">
+        <mat-icon>login</mat-icon>
+    </a>
+    }
 </mat-toolbar>
 
 <router-outlet></router-outlet>
