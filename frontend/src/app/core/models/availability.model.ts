@@ -1,3 +1,5 @@
+import { UserTimeOffResponse } from "./time-off.models";
+
 export interface UserAvailabilityDto {
     dayOfWeek: DayOfWeek;
     startTime: string;
@@ -12,4 +14,9 @@ export enum DayOfWeek {
     Friday = 5,
     Saturday = 6,
     Sunday = 0
+}
+
+export interface UserAvailabilityDetails {
+    availabilities: UserAvailabilityDto[];
+    timeOffs: UserTimeOffResponse[];
 }

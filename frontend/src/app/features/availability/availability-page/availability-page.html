@@ -4,9 +4,9 @@
             <h1 class="text-2xl font-semibold text-slate-900">My availability</h1>
             <p class="mt-1 max-w-xl text-sm text-slate-600">
                 @if (editing()) {
-                Add the time windows when you are free. A day with no windows means you are busy.
+                Add the time windows when you are regularly free. A day with no windows means you are busy.
                 } @else {
-                The hours during the week when you are free.
+                Your regular weekly hours, plus any one-time changes for specific dates.
                 }
             </p>
         </div>
@@ -41,13 +41,13 @@
     </div>
     } @else if (loadError()) {
     <div class="rounded-xl border border-red-200 bg-red-50 p-6 text-center">
-        <p class="text-red-800">Could not load your availabilities.</p>
+        <p class="text-red-800">Could not load your availability.</p>
         <button mat-stroked-button type="button" class="mt-3" (click)="load()">
             Try again
         </button>
     </div>
     } @else if (editing()) {
-    <!-- ===== EDIT MODE ===== -->
+    <!-- ===== EDIT MODE (regular weekly hours) ===== -->
     <div class="divide-y divide-slate-200 rounded-xl border border-slate-200 bg-white">
         @for (day of week; track day.value; let i = $index) {
         @let windows = form.at(i);
@@ -106,21 +106,56 @@
     <!-- ===== WEEK VIEW ===== -->
     @if (isEmpty()) {
     <div class="mb-4 rounded-xl border border-dashed border-slate-300 bg-slate-50 p-6 text-center">
-        <p class="text-slate-700">You haven't set any free hours yet.</p>
+        <p class="text-slate-700">You haven't set any regular free hours yet.</p>
         <button mat-stroked-button type="button" class="mt-3" (click)="startEditing()">
             Set free hours
         </button>
     </div>
     }
 
+    <!-- toolbar: week navigation + legend -->
+    <div class="mb-3 flex flex-wrap items-center justify-between gap-x-6 gap-y-2">
+        <div class="flex items-center gap-1">
+            <button mat-icon-button type="button" (click)="shiftWeek(-1)" aria-label="Previous week">
+                <mat-icon>chevron_left</mat-icon>
+            </button>
+            <button mat-icon-button type="button" (click)="shiftWeek(1)" aria-label="Next week">
+                <mat-icon>chevron_right</mat-icon>
+            </button>
+            <button mat-stroked-button type="button" class="ml-1" (click)="goToToday()">Today</button>
+            <span class="ml-3 text-sm font-medium text-slate-800">{{ weekLabel() }}</span>
+        </div>
+
+        <ul class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-600">
+            <li class="flex items-center gap-1.5">
+                <span class="h-3 w-3 rounded-sm border-l-4 border-emerald-600 bg-emerald-100"></span>
+                Regular free hours
+            </li>
+            <li class="flex items-center gap-1.5">
+                <span class="h-3 w-3 rounded-sm border border-dashed border-sky-600 bg-sky-100"></span>
+                One-time: free
+            </li>
+            <li class="flex items-center gap-1.5">
+                <span class="busy-pattern h-3 w-3 rounded-sm border border-red-600"></span>
+                One-time: busy
+            </li>
+        </ul>
+    </div>
+
     <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white">
-        <div class="min-w-180">
+        <div class="min-w-[720px]">
             <!-- day headers -->
             <div class="grid grid-cols-[3.5rem_repeat(7,minmax(0,1fr))] border-b border-slate-200">
                 <div></div>
                 @for (col of columns(); track col.value) {
-                <div class="border-l border-slate-100 py-2 text-center text-sm font-medium text-slate-800">
-                    {{ col.short }}
+                <div class="border-l border-slate-100 py-2 text-center"
+                    [attr.aria-current]="col.isToday ? 'date' : null">
+                    <div class="text-xs font-medium text-slate-600">{{ col.short }}</div>
+                    <div class="mx-auto mt-0.5 flex h-7 w-7 items-center justify-center rounded-full text-sm font-medium"
+                        [class.bg-slate-900]="col.isToday" [class.text-white]="col.isToday"
+                        [class.text-slate-900]="!col.isToday">
+                        {{ col.dayNumber }}
+                    </div>
                 </div>
                 }
             </div>
@@ -142,11 +177,27 @@
                     <div class="absolute inset-x-0 border-t border-slate-100" [style.top.px]="h.top"></div>
                     }
 
-                    @for (block of col.blocks; track block.label) {
+                    <!-- regular weekly hours -->
+                    @for (block of col.routine; track block.label) {
                     <div class="absolute inset-x-1 overflow-hidden rounded-md border-l-4 border-emerald-600 bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-900"
                         [style.top.px]="block.top" [style.height.px]="block.height"
                         [attr.title]="col.label + ' ' + block.label">
                         {{ block.label }}
+                    </div>
+                    }
+
+                    <!-- one-time changes, drawn on top of the regular hours -->
+                    @for (o of col.overrides; track o.id) {
+                    <div class="absolute inset-x-1 flex justify-end overflow-hidden rounded-md border p-0.5"
+                        [class.busy-pattern]="!o.isAvailable" [class.border-red-600]="!o.isAvailable"
+                        [class.text-red-800]="!o.isAvailable" [class.border-dashed]="o.isAvailable"
+                        [class.border-sky-600]="o.isAvailable" [class.bg-sky-100]="o.isAvailable"
+                        [class.text-sky-900]="o.isAvailable" [style.top.px]="o.top" [style.height.px]="o.height"
+                        [attr.title]="col.label + ' ' + o.label">
+                        <mat-icon class="override-icon" aria-hidden="true">
+                            {{ o.isAvailable ? 'check' : 'block' }}
+                        </mat-icon>
+                        <span class="sr-only">{{ o.label }}</span>
                     </div>
                     }
                 </div>
@@ -154,5 +205,116 @@
             </div>
         </div>
     </div>
+
+    <!-- ===== ONE-TIME CHANGES ===== -->
+    <section class="mt-10">
+        <div class="mb-3 flex flex-wrap items-start justify-between gap-3">
+            <div>
+                <h2 class="text-lg font-semibold text-slate-900">One-time changes</h2>
+                <p class="mt-1 max-w-xl text-sm text-slate-600">
+                    Override your regular hours on a specific date: mark yourself busy when you'd normally be
+                    free, or free when you'd normally be busy. One-time changes cannot overlap each other.
+                </p>
+            </div>
+
+            @if (!addingTimeOff()) {
+            <button mat-stroked-button type="button" (click)="startAddingTimeOff()">
+                <mat-icon>add</mat-icon>
+                Add one-time change
+            </button>
+            }
+        </div>
+
+        @if (addingTimeOff()) {
+        <form [formGroup]="timeOffForm" (ngSubmit)="addTimeOff()"
+            class="mb-4 rounded-xl border border-slate-200 bg-white p-4">
+            <mat-button-toggle-group formControlName="isAvailable" aria-label="Type of change" class="mb-4">
+                <mat-button-toggle [value]="false">I'm busy</mat-button-toggle>
+                <mat-button-toggle [value]="true">I'm free</mat-button-toggle>
+            </mat-button-toggle-group>
+
+            <div class="flex flex-wrap items-start gap-3">
+                <mat-form-field appearance="outline" subscriptSizing="dynamic" class="w-44">
+                    <mat-label>Date</mat-label>
+                    <input matInput type="date" formControlName="date" [attr.min]="todayKey" />
+                    @if (timeOffForm.controls.date.hasError('required')) {
+                    <mat-error>Required</mat-error>
+                    }
+                    @if (timeOffForm.controls.date.hasError('minDate')) {
+                    <mat-error>Date cannot be in the past</mat-error>
+                    }
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" subscriptSizing="dynamic" class="w-36">
+                    <mat-label>From</mat-label>
+                    <input matInput type="time" formControlName="start" />
+                    @if (timeOffForm.controls.start.hasError('required')) {
+                    <mat-error>Required</mat-error>
+                    }
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" subscriptSizing="dynamic" class="w-36">
+                    <mat-label>To</mat-label>
+                    <input matInput type="time" formControlName="end" />
+                    @if (timeOffForm.controls.end.hasError('required')) {
+                    <mat-error>Required</mat-error>
+                    }
+                </mat-form-field>
+            </div>
+
+            @if (timeOffForm.hasError('range')) {
+            <p class="mt-2 text-sm text-red-700">The end time must be later than the start time.</p>
+            }
+            @if (timeOffForm.hasError('timeOffOverlap')) {
+            <p class="mt-2 text-sm text-red-700">
+                This overlaps another one-time change on the same date.
+            </p>
+            }
+
+            <div class="mt-4 flex gap-2">
+                <button mat-stroked-button type="button" (click)="cancelAddingTimeOff()" [disabled]="savingTimeOff()">
+                    Cancel
+                </button>
+                <button mat-flat-button type="submit" [disabled]="savingTimeOff()">
+                    @if (savingTimeOff()) {
+                    <mat-spinner diameter="18" class="mr-2 inline-block"></mat-spinner>
+                    Adding…
+                    } @else {
+                    Add change
+                    }
+                </button>
+            </div>
+        </form>
+        }
+
+        @if (timeOffRows().length) {
+        <ul class="divide-y divide-slate-200 rounded-xl border border-slate-200 bg-white">
+            @for (row of timeOffRows(); track row.id) {
+            <li class="flex items-center gap-4 px-4 py-3" [class.opacity-60]="row.isPast">
+                <div class="min-w-0 flex-1">
+                    <p class="text-sm font-medium text-slate-900">{{ row.dateLabel }}</p>
+                    <p class="text-sm text-slate-600">{{ row.timeLabel }}</p>
+                </div>
+
+                <span class="rounded-full px-2.5 py-0.5 text-xs font-medium" [class.bg-sky-100]="row.isAvailable"
+                    [class.text-sky-900]="row.isAvailable" [class.bg-red-100]="!row.isAvailable"
+                    [class.text-red-800]="!row.isAvailable">
+                    {{ row.isAvailable ? 'Free' : 'Busy' }}
+                </span>
+
+                <button mat-icon-button type="button" (click)="deleteTimeOff(row.id)"
+                    [disabled]="deletingId() === row.id"
+                    [attr.aria-label]="'Delete one-time change on ' + row.dateLabel + ', ' + row.timeLabel">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </li>
+            }
+        </ul>
+        } @else if (!addingTimeOff()) {
+        <p class="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-6 text-center text-sm text-slate-600">
+            No one-time changes yet.
+        </p>
+        }
+    </section>
     }
 </div>

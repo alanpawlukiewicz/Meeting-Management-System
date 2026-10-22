@@ -1,3 +1,18 @@
 :host {
   display: block;
 }
+
+.busy-pattern {
+  background-image: repeating-linear-gradient(
+    135deg,
+    rgb(254 202 202 / 0.75) 0 6px,
+    rgb(254 226 226 / 0.75) 6px 12px
+  );
+}
+
+.override-icon {
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+  line-height: 16px;
+}

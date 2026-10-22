@@ -39,17 +39,17 @@ export class LoginPage {
       return;
     }
     this.loginErrorSignal.set(null);
-    
+
     const request: LoginRequest = {
       password: this.loginForm.controls.password.getRawValue() ?? '',
       userName: this.loginForm.controls.userName.getRawValue() ?? ''
     };
     this.authService.login(request)
-    .pipe(takeUntilDestroyed(this.destroyRef))
-    .subscribe({
-      error: (err: HttpErrorResponse) => {
-        this.loginErrorSignal.set(err.error["detail"]);
-      }
-    });
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        error: (err: HttpErrorResponse) => {
+          this.loginErrorSignal.set(err.error["detail"]);
+        }
+      });
   }
 }
