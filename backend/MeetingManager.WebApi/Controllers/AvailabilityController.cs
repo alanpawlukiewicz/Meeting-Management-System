@@ -23,7 +23,7 @@ namespace MeetingManager.WebApi.Controllers
             => await _userAvailabilityUpdaterService.UpdateUserAvailabilityListAsync(_currentUserService.UserId, requestList, ct);
 
         [HttpGet("me")]
-        public async Task<ActionResult<List<UserAvailabilityDto>>> GetUserAvailabilities(CancellationToken ct)
+        public async Task<ActionResult<UserAvailabilityDetails>> GetUserAvailabilitiesWithTimeOffs(CancellationToken ct)
             => await _userAvailabilityGetterService.GetUserAvailabilitiesAsync(_currentUserService.UserId, ct);
     }
 }

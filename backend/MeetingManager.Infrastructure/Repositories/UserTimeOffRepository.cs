@@ -14,9 +14,14 @@ namespace MeetingManager.Infrastructure.Repositories
         {
         }
 
-        public async Task<List<UserTimeOff>> FindUserTimeOffByDateAsync(Guid userId, DateOnly date, CancellationToken ct = default)
+        public async Task<List<UserTimeOff>> GetUserTimeOffByDateAsync(Guid userId, DateOnly date, CancellationToken ct = default)
         {
             return await DbSet.Where(uto => uto.UserId == userId && uto.Date == date).ToListAsync(ct);
+        }
+
+        public async Task<List<UserTimeOff>> GetUserActiveTimeOffsAsync(Guid userId, CancellationToken ct = default)
+        {
+            return await DbSet.AsNoTracking().Where(uto => uto.UserId == userId && uto.Date >= DateOnly.FromDateTime(DateTime.Now)).ToListAsync(ct);
         }
     }
 }

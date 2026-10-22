@@ -7,6 +7,6 @@ namespace MeetingManager.Core.ServiceContracts
 {
     public interface IUserAvailabilityGetterService
     {
-        Task<List<UserAvailabilityDto>> GetUserAvailabilitiesAsync(Guid userId, CancellationToken ct = default);
+        Task<UserAvailabilityDetails> GetUserAvailabilitiesAsync(Guid userId, CancellationToken ct = default);
     }
 }

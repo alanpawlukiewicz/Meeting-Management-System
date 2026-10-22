@@ -7,6 +7,7 @@ namespace MeetingManager.Domain.RepositoryContracts
 {
     public interface IUserTimeOffRepository : IRepository<UserTimeOff, Guid>
     {
-        Task<List<UserTimeOff>> FindUserTimeOffByDateAsync(Guid userId, DateOnly date, CancellationToken ct = default);
+        Task<List<UserTimeOff>> GetUserTimeOffByDateAsync(Guid userId, DateOnly date, CancellationToken ct = default);
+        Task<List<UserTimeOff>> GetUserActiveTimeOffsAsync(Guid userId, CancellationToken ct = default);
     }
 }

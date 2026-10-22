@@ -11,15 +11,23 @@ namespace MeetingManager.Core.Services
     public class UserAvailabilityGetterService : IUserAvailabilityGetterService
     {
         private readonly IUserAvailabilityRepository _userAvailabilityRepository;
+        private readonly IUserTimeOffRepository _userTimeOffRepository;
 
-        public UserAvailabilityGetterService(IUserAvailabilityRepository userAvailabilityRepository)
+        public UserAvailabilityGetterService(IUserAvailabilityRepository userAvailabilityRepository, IUserTimeOffRepository userTimeOffRepository)
         {
             _userAvailabilityRepository = userAvailabilityRepository;
+            _userTimeOffRepository = userTimeOffRepository;
         }
 
-        public async Task<List<UserAvailabilityDto>> GetUserAvailabilitiesAsync(Guid userId, CancellationToken ct = default)
+        public async Task<UserAvailabilityDetails> GetUserAvailabilitiesAsync(Guid userId, CancellationToken ct = default)
         {
-            return (await _userAvailabilityRepository.GetUserAvailabilitiesAsync(userId, ct)).Select(ua => ua.ToUserAvailabilityDto()).ToList();
+            var matchingAvailabilities = await _userAvailabilityRepository.GetUserAvailabilitiesAsync(userId, ct);
+            var matchingTimeOffs = await _userTimeOffRepository.GetUserActiveTimeOffsAsync(userId, ct);
+            return new UserAvailabilityDetails
+            {
+                Availabilities = matchingAvailabilities.Select(ua => ua.ToUserAvailabilityDto()).ToList(),
+                TimeOffs = matchingTimeOffs.Select(uto => uto.ToUserTimeOffResponse()).ToList()
+            };
         }
     }
 }
