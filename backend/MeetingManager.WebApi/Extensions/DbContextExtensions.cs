@@ -17,7 +17,6 @@ namespace MeetingManager.WebApi.Extensions
                     npgsqlOptions =>
                     {
                         npgsqlOptions.MapEnum<AttendanceStatus>("attendance_status");
-                        npgsqlOptions.MapEnum<MeetingManager.Domain.Enums.DayOfWeek>("day_of_week");
                     })
                 .UseSnakeCaseNamingConvention();
             });

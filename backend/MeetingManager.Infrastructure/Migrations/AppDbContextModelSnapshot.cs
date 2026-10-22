@@ -22,7 +22,6 @@ namespace MeetingManager.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "attendance_status", new[] { "pending", "accepted", "declined" });
-            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "day_of_week", new[] { "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday" });
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("MeetingManager.Domain.Entities.Meeting", b =>

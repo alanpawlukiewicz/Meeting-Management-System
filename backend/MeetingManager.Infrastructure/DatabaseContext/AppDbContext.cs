@@ -23,7 +23,6 @@ namespace MeetingManager.Infrastructure.DatabaseContext
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.HasPostgresEnum<AttendanceStatus>();
-            modelBuilder.HasPostgresEnum<Domain.Enums.DayOfWeek>();
 
             modelBuilder.Entity<User>(entity =>
             {
