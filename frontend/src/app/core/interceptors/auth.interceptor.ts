@@ -8,7 +8,7 @@ import { catchError, switchMap, throwError, map, of } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 import { environment } from '../../../environments/environment';
 
-const AUTH_ENDPOINTS = ['/auth/login', '/auth/refresh', '/auth/logout', '/auth/register'];
+const AUTH_ENDPOINTS = ['/auth/login', '/auth/refresh', '/auth/register'];
 
 const withToken = (req: HttpRequest<unknown>, token: string | null) =>
     token ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } }) : req;
