@@ -9,6 +9,6 @@ namespace MeetingManager.Domain.Entities
         [Required]
         [MaxLength(100)]
         public string Name { get; set; } = null!;
-        public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
+        public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
     }
 }

@@ -21,5 +21,7 @@ namespace MeetingManager.Domain.Entities
 
         [ForeignKey(nameof(CreatorId))]
         public User? User { get; set; }
+
+        public ICollection<MeetingParticipant> MeetingParticipants { get; set; } = new List<MeetingParticipant>();
     }
 }

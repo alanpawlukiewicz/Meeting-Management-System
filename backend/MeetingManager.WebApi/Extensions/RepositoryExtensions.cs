@@ -12,6 +12,7 @@ namespace MeetingManager.WebApi.Extensions
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             services.AddScoped<IUserAvailabilityRepository, UserAvailabilityRepository>();
             services.AddScoped<IUserTimeOffRepository, UserTimeOffRepository>();
+            services.AddScoped<IMeetingRepository, MeetingRepository>();
 
             return services;
         }

@@ -16,6 +16,6 @@ namespace MeetingManager.Domain.Entities
         public DateTimeOffset? LockoutEnd { get; set; }
         public int AccessFailedCount { get; set; } = 0;
 
-        public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
+        public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
     }
 }
