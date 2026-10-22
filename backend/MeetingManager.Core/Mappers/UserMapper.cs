@@ -25,5 +25,15 @@ namespace MeetingManager.Core.Mappers
                 UserName = user.UserName
             };
         }
+
+        public static UserAvailabilityDto ToUserAvailabilityDto(this UserAvailability userAvailability)
+        {
+            return new UserAvailabilityDto
+            {
+                DayOfWeek = userAvailability.DayOfWeek,
+                StartTime = userAvailability.StartTime,
+                EndTime = userAvailability.EndTime
+            };
+        }
     }
 }

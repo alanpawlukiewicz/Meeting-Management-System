@@ -11,6 +11,11 @@ namespace MeetingManager.Infrastructure.Repositories
         {
         }
 
+        public async Task<List<UserAvailability>> GetUserAvailabilitiesAsync(Guid userId, CancellationToken ct = default)
+        {
+            return await DbSet.AsNoTracking().Where(ua => ua.UserId == userId).ToListAsync(ct);
+        }
+
         public async Task SetCurrentUserAvailabilitiesForDeleteAsync(Guid userId, CancellationToken ct = default)
         {
             var items = await DbSet.Where(ua => ua.UserId == userId).ToListAsync();
