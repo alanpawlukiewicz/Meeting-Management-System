@@ -22,7 +22,7 @@ namespace MeetingManager.Core.Services
         public async Task<UserAvailabilityDetails> GetUserAvailabilitiesAsync(Guid userId, CancellationToken ct = default)
         {
             var matchingAvailabilities = await _userAvailabilityRepository.GetUserAvailabilitiesAsync(userId, ct);
-            var matchingTimeOffs = await _userTimeOffRepository.GetUserActiveTimeOffsAsync(userId, ct);
+            var matchingTimeOffs = await _userTimeOffRepository.GetUserTimeOffsAsync(userId, ct);
             return new UserAvailabilityDetails
             {
                 Availabilities = matchingAvailabilities.Select(ua => ua.ToUserAvailabilityDto()).ToList(),

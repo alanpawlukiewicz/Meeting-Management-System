@@ -19,9 +19,14 @@ namespace MeetingManager.Infrastructure.Repositories
             return await DbSet.Where(uto => uto.UserId == userId && uto.Date == date).ToListAsync(ct);
         }
 
-        public async Task<List<UserTimeOff>> GetUserActiveTimeOffsAsync(Guid userId, CancellationToken ct = default)
+        public async Task<List<UserTimeOff>> GetUserTimeOffsAsync(Guid userId, CancellationToken ct = default)
         {
-            return await DbSet.AsNoTracking().Where(uto => uto.UserId == userId && uto.Date >= DateOnly.FromDateTime(DateTime.Now)).ToListAsync(ct);
+            return await DbSet.AsNoTracking().Where(uto => uto.UserId == userId).ToListAsync(ct);
+        }
+
+        public async Task<UserTimeOff?> FindUserTimeOffAsync(Guid timeOffId, CancellationToken ct = default)
+        {
+            return await DbSet.AsNoTracking().FirstOrDefaultAsync(uto => uto.Id == timeOffId, ct);
         }
     }
 }
