@@ -1,5 +1,6 @@
 ﻿using MeetingManager.Core.DTO;
 using MeetingManager.Core.Exceptions;
+using MeetingManager.Core.Mappers;
 using MeetingManager.Core.ServiceContracts;
 using MeetingManager.Core.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -30,11 +31,7 @@ namespace MeetingManager.WebApi.Controllers
             var response = await _userRegistrationService.RegisterUserAsync(request, ipAddress, userAgent, ct);
 
             Response.Cookies.Append("refreshToken", response.RefreshToken!, RefreshCookieOptions(response.RefreshTokenExpiration));
-            return new JwtTokenResponse
-            {
-                Token = response.JwtToken,
-                ExpirationDate = response.JwtTokenExpiration
-            };
+            return response.ToJwtTokenResponse();
         }
 
         [AllowAnonymous]
@@ -47,11 +44,7 @@ namespace MeetingManager.WebApi.Controllers
             var response = await _authService.Login(request, ipAddress, userAgent, ct);
 
             Response.Cookies.Append("refreshToken", response.RefreshToken!, RefreshCookieOptions(response.RefreshTokenExpiration));
-            return new JwtTokenResponse
-            {
-                Token = response.JwtToken,
-                ExpirationDate = response.JwtTokenExpiration
-            };
+            return response.ToJwtTokenResponse();
         }
 
         [HttpPost("logout")]
@@ -83,11 +76,7 @@ namespace MeetingManager.WebApi.Controllers
                 var response = await _authService.RefreshTokensAsync(refreshToken, ipAddress, userAgent, ct);
 
                 Response.Cookies.Append("refreshToken", response.RefreshToken!, RefreshCookieOptions(response.RefreshTokenExpiration));
-                return new JwtTokenResponse
-                {
-                    Token = response.JwtToken,
-                    ExpirationDate = response.JwtTokenExpiration
-                };
+                return response.ToJwtTokenResponse();
             }
             catch (InvalidRefreshTokenException)
             {
