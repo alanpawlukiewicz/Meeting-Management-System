@@ -35,5 +35,17 @@ namespace MeetingManager.Core.Mappers
                 EndTime = userAvailability.EndTime
             };
         }
+
+        public static UserTimeOffResponse ToUserTimeOffResponse(this UserTimeOff userTimeOff)
+        {
+            return new UserTimeOffResponse
+            {
+                Id = userTimeOff.Id,
+                Date = userTimeOff.Date,
+                StartTime = userTimeOff.StartTime,
+                EndTime = userTimeOff.EndTime,
+                IsAvailable = userTimeOff.IsAvailable
+            };
+        }
     }
 }
