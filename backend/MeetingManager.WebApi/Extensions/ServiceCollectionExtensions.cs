@@ -48,7 +48,7 @@ namespace MeetingManager.WebApi.Extensions
         private static IServiceCollection AddApplicationLayerServices(this IServiceCollection services)
         {
             services.AddServices();
-
+            services.AddCustomLogging();
             return services;
         }
     }

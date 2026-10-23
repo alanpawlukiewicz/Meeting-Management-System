@@ -35,6 +35,8 @@ namespace MeetingManager.WebApi.Extensions
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseCustomLogging();
+
             app.MapControllers();
 
             return app;
