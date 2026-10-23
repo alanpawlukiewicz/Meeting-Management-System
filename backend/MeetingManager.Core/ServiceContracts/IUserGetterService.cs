@@ -8,5 +8,7 @@ namespace MeetingManager.Core.ServiceContracts
     public interface IUserGetterService
     {
         Task<UserProfile> GetUserProfileAsync(Guid userId, CancellationToken ct = default);
+
+        Task<List<UserStatusCheckResponse>> CheckUserAvailabilitiesAsync(UserStatusCheckRequest request, CancellationToken ct = default);
     }
 }

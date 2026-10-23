@@ -35,5 +35,26 @@ namespace MeetingManager.Infrastructure.Repositories
         {
             return await DbSet.Select(u => u.Id).ToListAsync(ct);
         }
+
+        public async Task<List<User>> GetUsersWithAvailabilitiesAsync(List<Guid>? userIds, DateOnly date, CancellationToken ct = default)
+        {
+            if (userIds == null)
+            {
+                return await DbSet
+                    .AsNoTracking()
+                    .Include(u => u.UserTimeOffs.Where(uto => uto.Date == date))
+                    .Include(u => u.UserAvailabilities.Where(ua => ua.DayOfWeek == date.DayOfWeek))
+                    .AsSplitQuery()
+                    .ToListAsync(ct);
+            }
+
+            return await DbSet
+                   .AsNoTracking()
+                   .Where(u => userIds.Contains(u.Id))
+                   .Include(u => u.UserTimeOffs.Where(uto => uto.Date == date))
+                   .Include(u => u.UserAvailabilities.Where(ua => ua.DayOfWeek == date.DayOfWeek))
+                   .AsSplitQuery()
+                   .ToListAsync(ct);
+        }
     }
 }

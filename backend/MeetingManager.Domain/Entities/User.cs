@@ -17,5 +17,7 @@ namespace MeetingManager.Domain.Entities
         public int AccessFailedCount { get; set; } = 0;
 
         public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
+        public ICollection<UserAvailability> UserAvailabilities { get; set; } = new List<UserAvailability>();
+        public ICollection<UserTimeOff> UserTimeOffs { get; set; } = new List<UserTimeOff>();
     }
 }

@@ -10,5 +10,6 @@ namespace MeetingManager.Domain.RepositoryContracts
         Task<User?> FindUserWithRolesAsync(Guid userId, CancellationToken ct = default);
 
         Task<List<Guid>> GetAllUserIdsAsync(CancellationToken ct = default);
+        Task<List<User>> GetUsersWithAvailabilitiesAsync(List<Guid>? userIds, DateOnly date, CancellationToken ct = default);
     }
 }

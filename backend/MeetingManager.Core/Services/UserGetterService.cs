@@ -2,6 +2,7 @@
 using MeetingManager.Core.Exceptions;
 using MeetingManager.Core.Mappers;
 using MeetingManager.Core.ServiceContracts;
+using MeetingManager.Domain.Entities;
 using MeetingManager.Domain.RepositoryContracts;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,65 @@ namespace MeetingManager.Core.Services
         public UserGetterService(IUserRepository userRepository)
         {
             _userRepository = userRepository;
+        }
+
+        public async Task<List<UserStatusCheckResponse>> CheckUserAvailabilitiesAsync(UserStatusCheckRequest request, CancellationToken ct = default)
+        {
+            if (request.EndTime < request.StartTime)
+                throw new ValidationException("End time must be later than start time.");
+
+            if (request.Date < DateOnly.FromDateTime(DateTime.UtcNow))
+                throw new ValidationException("Given date is expired.");
+
+            List<User> matchingUsers = await _userRepository.GetUsersWithAvailabilitiesAsync(request.UserIds?.Distinct().ToList(), request.Date, ct);
+
+            List<UserStatusCheckResponse> response = new(matchingUsers.Count);
+
+            var start = request.StartTime;
+            var end = request.EndTime;
+
+            foreach (var user in matchingUsers)
+            {
+                var freeWindows = user.UserAvailabilities
+                    .Select(ua => (ua.StartTime, ua.EndTime))
+                    .Concat(user.UserTimeOffs
+                        .Where(t => t.IsAvailable)
+                        .Select(t => (t.StartTime, t.EndTime)));
+
+                bool covered = IsFullyCovered(freeWindows, start, end);
+
+                bool blocked = user.UserTimeOffs
+                    .Any(t => !t.IsAvailable && t.StartTime < end && t.EndTime > start);
+
+                response.Add(new UserStatusCheckResponse
+                {
+                    UserId = user.Id,
+                    UserName = user.UserName,
+                    IsAvailable = covered && !blocked
+                });
+            }
+
+            return response;
+        }
+
+        private static bool IsFullyCovered(
+                IEnumerable<(TimeOnly Start, TimeOnly End)> windows, TimeOnly start, TimeOnly end)
+        {
+            var covered = start;
+
+            foreach (var w in windows.Where(w => w.End > start && w.Start < end).OrderBy(w => w.Start))
+            {
+                if (w.Start > covered)
+                    return false;
+
+                if (w.End > covered)
+                    covered = w.End;
+
+                if (covered >= end)
+                    return true;
+            }
+
+            return covered >= end;
         }
 
         public async Task<UserProfile> GetUserProfileAsync(Guid userId, CancellationToken ct = default)
