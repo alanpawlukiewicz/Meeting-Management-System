@@ -14,7 +14,7 @@ namespace MeetingManager.WebApi.Controllers
             _userGetterService = userGetterService;
         }
 
-        [HttpGet("availabilities")]
+        [HttpPost("availabilities")]
         public async Task<ActionResult<List<UserStatusCheckResponse>>> CheckUserAvailabilities(UserStatusCheckRequest request, CancellationToken ct)
             => await _userGetterService.CheckUserAvailabilitiesAsync(request, ct);
     }
