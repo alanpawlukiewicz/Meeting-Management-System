@@ -19,8 +19,8 @@ namespace MeetingManager.WebApi.Controllers
         }
 
         [HttpGet("me")]
-        public async Task<ActionResult<List<MeetingDto>>> GetUserMeetings(CancellationToken ct)
-            => await _meetingGetterService.GetUserMeetingsAsync(_currentUserService.UserId, ct);
+        public async Task<ActionResult<List<MeetingDto>>> GetCurrentUserMeetings(CancellationToken ct)
+            => await _meetingGetterService.GetCurrentUserMeetingsAsync(_currentUserService.UserId, ct);
 
         [HttpPut("{meetingId:guid}/attendance")]
         public async Task<IActionResult> ChangeAttendance(Guid meetingId, StatusDto request, CancellationToken ct)

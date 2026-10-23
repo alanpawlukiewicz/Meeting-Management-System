@@ -17,9 +17,9 @@ namespace MeetingManager.Core.Services
             _meetingRepository = meetingRepository;
         }
 
-        public async Task<List<MeetingDto>> GetUserMeetingsAsync(Guid userId, CancellationToken ct = default)
+        public async Task<List<MeetingDto>> GetCurrentUserMeetingsAsync(Guid userId, CancellationToken ct = default)
         {
-            var meetings = await _meetingRepository.GetParticipantMeetingsAsync(userId, ct);
+            var meetings = await _meetingRepository.GetCurrentParticipantMeetingsAsync(userId, ct);
             return meetings.Select(m => m.ToMeetingDto(userId)).ToList();
         }
     }

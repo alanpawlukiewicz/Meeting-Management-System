@@ -14,11 +14,12 @@ namespace MeetingManager.Infrastructure.Repositories
         {
         }
 
-        public async Task<List<Meeting>> GetParticipantMeetingsAsync(Guid userId, CancellationToken ct = default)
+        public async Task<List<Meeting>> GetCurrentParticipantMeetingsAsync(Guid userId, CancellationToken ct = default)
         {
             return await DbSet
                     .AsNoTracking()
-                    .Where(m => m.MeetingParticipants.Any(mp => mp.UserId == userId))
+                    .Where(m => m.MeetingParticipants.Any(mp => mp.UserId == userId)
+                    && m.Date >= DateOnly.FromDateTime(DateTime.UtcNow))
                     .Include(m => m.User)
                     .Include(m => m.MeetingParticipants.Where(mp => mp.UserId == userId))
                     .ToListAsync(ct);

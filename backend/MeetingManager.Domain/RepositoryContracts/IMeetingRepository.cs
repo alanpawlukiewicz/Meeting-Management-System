@@ -7,6 +7,6 @@ namespace MeetingManager.Domain.RepositoryContracts
 {
     public interface IMeetingRepository : IRepository<Meeting, Guid>
     {
-        Task<List<Meeting>> GetParticipantMeetingsAsync(Guid userId, CancellationToken ct = default);
+        Task<List<Meeting>> GetCurrentParticipantMeetingsAsync(Guid userId, CancellationToken ct = default);
     }
 }
