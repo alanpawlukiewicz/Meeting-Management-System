@@ -85,10 +85,6 @@ namespace MeetingManager.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("user_id");
 
-                    b.Property<bool>("WillAttend")
-                        .HasColumnType("boolean")
-                        .HasColumnName("will_attend");
-
                     b.HasKey("Id")
                         .HasName("pk_meeting_participants");
 
@@ -309,7 +305,7 @@ namespace MeetingManager.Infrastructure.Migrations
             modelBuilder.Entity("MeetingManager.Domain.Entities.MeetingParticipant", b =>
                 {
                     b.HasOne("MeetingManager.Domain.Entities.Meeting", "Meeting")
-                        .WithMany()
+                        .WithMany("MeetingParticipants")
                         .HasForeignKey("MeetingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -370,6 +366,11 @@ namespace MeetingManager.Infrastructure.Migrations
                     b.Navigation("Role");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MeetingManager.Domain.Entities.Meeting", b =>
+                {
+                    b.Navigation("MeetingParticipants");
                 });
 
             modelBuilder.Entity("MeetingManager.Domain.Entities.Role", b =>

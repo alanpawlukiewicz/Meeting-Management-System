@@ -12,10 +12,8 @@ namespace MeetingManager.Domain.Entities
         public Guid MeetingId { get; set; }
         [Required]
         public Guid UserId { get; set; }
-        [Required]
-        public bool WillAttend { get; set; }
-        public AttendanceStatus Status { get; private set; } = AttendanceStatus.Pending;
-        public DateTimeOffset? RespondedAt { get; private set; }
+        public AttendanceStatus Status { get; set; } = AttendanceStatus.Pending;
+        public DateTimeOffset? RespondedAt { get; set; }
 
         [ForeignKey(nameof(MeetingId))]
         public Meeting? Meeting { get; set; }
