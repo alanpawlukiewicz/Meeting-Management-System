@@ -17,10 +17,11 @@ namespace MeetingManager.Infrastructure.Repositories
         public async Task<List<Meeting>> GetParticipantMeetingsAsync(Guid userId, CancellationToken ct = default)
         {
             return await DbSet
-                .AsNoTracking()
-                .Where(m => m.MeetingParticipants.Any(mp => mp.UserId == userId))
-                .Include(m => m.User)
-                .ToListAsync(ct);
+                    .AsNoTracking()
+                    .Where(m => m.MeetingParticipants.Any(mp => mp.UserId == userId))
+                    .Include(m => m.User)
+                    .Include(m => m.MeetingParticipants.Where(mp => mp.UserId == userId))
+                    .ToListAsync(ct);
         }
     }
 }

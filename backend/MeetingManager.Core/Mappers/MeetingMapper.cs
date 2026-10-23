@@ -8,7 +8,7 @@ namespace MeetingManager.Core.Mappers
 {
     public static class MeetingMapper
     {
-        public static MeetingDto ToMeetingDto(this Meeting meeting)
+        public static MeetingDto ToMeetingDto(this Meeting meeting, Guid userId)
         {
             return new MeetingDto
             {
@@ -17,7 +17,8 @@ namespace MeetingManager.Core.Mappers
                 Date = meeting.Date,
                 EndTime = meeting.EndTime,
                 StartTime = meeting.StartTime,
-                Place = meeting.Place
+                Place = meeting.Place,
+                Status = meeting.MeetingParticipants.FirstOrDefault(mp => mp.UserId == userId)!.Status
             };
         }
     }

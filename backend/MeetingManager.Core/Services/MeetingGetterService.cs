@@ -20,7 +20,7 @@ namespace MeetingManager.Core.Services
         public async Task<List<MeetingDto>> GetUserMeetingsAsync(Guid userId, CancellationToken ct = default)
         {
             var meetings = await _meetingRepository.GetParticipantMeetingsAsync(userId, ct);
-            return meetings.Select(m => m.ToMeetingDto()).ToList();
+            return meetings.Select(m => m.ToMeetingDto(userId)).ToList();
         }
     }
 }

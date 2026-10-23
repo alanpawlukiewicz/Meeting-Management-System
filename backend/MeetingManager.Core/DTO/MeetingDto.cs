@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MeetingManager.Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
@@ -13,5 +14,6 @@ namespace MeetingManager.Core.DTO
         public TimeOnly StartTime { get; set; }
         public TimeOnly EndTime { get; set; }
         public string Place { get; set; } = string.Empty;
+        public AttendanceStatus Status { get; set; }
     }
 }
