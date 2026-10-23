@@ -1,0 +1,18 @@
+:host {
+  display: block;
+}
+
+.meta-icon {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+  line-height: 18px;
+}
+
+.empty-icon {
+  width: 40px;
+  height: 40px;
+  font-size: 40px;
+  line-height: 40px;
+}
