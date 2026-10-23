@@ -22,6 +22,8 @@ namespace MeetingManager.WebApi.Extensions
 
             services.AddScoped<IMeetingGetterService, MeetingGetterService>();
 
+            services.AddScoped<IMeetingAttendanceUpdaterService, MeetingAttendanceUpdaterService>();
+
             services.AddScoped<IAuthService, AuthService>();
 
             services.AddScoped<ICurrentUserService, CurrentUserService>();
