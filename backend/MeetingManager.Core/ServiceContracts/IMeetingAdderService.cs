@@ -7,6 +7,6 @@ namespace MeetingManager.Core.ServiceContracts
 {
     public interface IMeetingAdderService
     {
-        Task<MeetingResponse> AddMeetingAsync(Guid creatorId, MeetingAddRequest request, CancellationToken ct = default);
+        Task<MeetingResponse> AddMeetingAsync(Guid creatorId, MeetingRequest request, CancellationToken ct = default);
     }
 }

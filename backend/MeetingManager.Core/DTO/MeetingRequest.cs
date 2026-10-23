@@ -5,7 +5,7 @@ using System.Text;
 
 namespace MeetingManager.Core.DTO
 {
-    public class MeetingAddRequest
+    public class MeetingRequest
     {
         [Required]
         public DateOnly Date { get; set; }

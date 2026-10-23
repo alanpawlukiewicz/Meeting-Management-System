@@ -13,13 +13,15 @@ namespace MeetingManager.WebApi.Controllers
         private readonly ICurrentUserService _currentUserService;
         private readonly IMeetingAttendanceUpdaterService _meetingAttendanceUpdaterService;
         private readonly IMeetingAdderService _meetingAdderService;
+        private readonly IMeetingUpdaterService _meetingUpdaterService;
 
-        public MeetingController(IMeetingGetterService meetingGetterService, ICurrentUserService currentUserService, IMeetingAttendanceUpdaterService meetingAttendanceUpdaterService, IMeetingAdderService meetingAdderService)
+        public MeetingController(IMeetingGetterService meetingGetterService, ICurrentUserService currentUserService, IMeetingAttendanceUpdaterService meetingAttendanceUpdaterService, IMeetingAdderService meetingAdderService, IMeetingUpdaterService meetingUpdaterService)
         {
             _meetingGetterService = meetingGetterService;
             _currentUserService = currentUserService;
             _meetingAttendanceUpdaterService = meetingAttendanceUpdaterService;
             _meetingAdderService = meetingAdderService;
+            _meetingUpdaterService = meetingUpdaterService;
         }
 
         [HttpGet("me")]
@@ -32,10 +34,15 @@ namespace MeetingManager.WebApi.Controllers
             await _meetingAttendanceUpdaterService.ChangeAttendanceAsync(meetingId, _currentUserService.UserId, request, ct);
             return NoContent();
         }
-
+         
         [HasRole(RoleName.Organizer)]
         [HttpPost]
-        public async Task<ActionResult<MeetingResponse>> AddMeeting(MeetingAddRequest request, CancellationToken ct)
+        public async Task<ActionResult<MeetingResponse>> AddMeeting(MeetingRequest request, CancellationToken ct)
             => await _meetingAdderService.AddMeetingAsync(_currentUserService.UserId, request, ct);
+
+        [HasRole(RoleName.Organizer)]
+        [HttpPut("{meetingId:guid}")]
+        public async Task<ActionResult<MeetingResponse>> UpdateMeeting(Guid meetingId, MeetingRequest request, CancellationToken ct)
+            => await _meetingUpdaterService.UpdateMeetingAsync(meetingId, _currentUserService.UserId, request, ct);
     }
 }

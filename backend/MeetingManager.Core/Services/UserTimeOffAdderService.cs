@@ -24,7 +24,7 @@ namespace MeetingManager.Core.Services
             if (request.StartTime >= request.EndTime)
                 throw new ValidationException("StartTime must be earlier than EndTime.");
 
-            if (request.Date < DateOnly.FromDateTime(DateTime.Now))
+            if (request.Date < DateOnly.FromDateTime(DateTime.UtcNow))
                 throw new ValidationException("Given date is expired.");
 
             var existing = await _userTimeOffRepository.GetUserTimeOffByDateAsync(userId, request.Date, ct);

@@ -18,10 +18,13 @@ namespace MeetingManager.Core.Services
             _userRepository = userRepository;
         }
 
-        public async Task<MeetingResponse> AddMeetingAsync(Guid creatorId, MeetingAddRequest request, CancellationToken ct = default)
+        public async Task<MeetingResponse> AddMeetingAsync(Guid creatorId, MeetingRequest request, CancellationToken ct = default)
         {
-            if (request.StartTime >= request.EndTime)
+            if (request.StartTime > request.EndTime)
                 throw new ValidationException("StartTime must be earlier than EndTime.");
+
+            if (request.Date < DateOnly.FromDateTime(DateTime.UtcNow))
+                throw new ValidationException("Given date is expired.");
 
             Meeting newMeeting = new Meeting
             {
@@ -33,7 +36,7 @@ namespace MeetingManager.Core.Services
                 StartTime = request.StartTime
             };
 
-            if (request.ParticipantIds is { Count: > 0 })
+            if (request.ParticipantIds != null)
             {
                 if (!request.ParticipantIds.Contains(creatorId))
                     newMeeting.MeetingParticipants.Add(new MeetingParticipant
