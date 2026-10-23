@@ -30,5 +30,10 @@ namespace MeetingManager.Infrastructure.Repositories
                 .AsSplitQuery()
                 .FirstOrDefaultAsync(u => u.Id == userId, ct);
         }
+
+        public async Task<List<Guid>> GetAllUserIdsAsync(CancellationToken ct = default)
+        {
+            return await DbSet.Select(u => u.Id).ToListAsync(ct);
+        }
     }
 }

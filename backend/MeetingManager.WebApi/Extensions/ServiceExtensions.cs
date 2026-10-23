@@ -21,6 +21,7 @@ namespace MeetingManager.WebApi.Extensions
             services.AddScoped<IUserTimeOffDeleterService, UserTimeOffDeleterService>();
 
             services.AddScoped<IMeetingGetterService, MeetingGetterService>();
+            services.AddScoped<IMeetingAdderService, MeetingAdderService>();
 
             services.AddScoped<IMeetingAttendanceUpdaterService, MeetingAttendanceUpdaterService>();
 

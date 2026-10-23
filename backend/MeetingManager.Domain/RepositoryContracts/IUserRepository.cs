@@ -8,5 +8,7 @@ namespace MeetingManager.Domain.RepositoryContracts
         Task<User?> FindUserByLoginAsync(string login, CancellationToken ct = default);
 
         Task<User?> FindUserWithRolesAsync(Guid userId, CancellationToken ct = default);
+
+        Task<List<Guid>> GetAllUserIdsAsync(CancellationToken ct = default);
     }
 }

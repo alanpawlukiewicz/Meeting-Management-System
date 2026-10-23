@@ -21,5 +21,17 @@ namespace MeetingManager.Core.Mappers
                 Status = meeting.MeetingParticipants.FirstOrDefault(mp => mp.UserId == userId)!.Status
             };
         }
+
+        public static MeetingResponse ToMeetingResponse(this Meeting meeting)
+        {
+            return new MeetingResponse
+            {
+                Id = meeting.Id,
+                Date = meeting.Date,
+                EndTime = meeting.EndTime,
+                StartTime = meeting.StartTime,
+                Place = meeting.Place
+            };
+        }
     }
 }
