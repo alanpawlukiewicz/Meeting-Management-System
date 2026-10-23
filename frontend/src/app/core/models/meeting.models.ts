@@ -11,3 +11,19 @@ export interface MeetingDto {
 export enum AttendanceStatus {
     Pending, Accepted, Declined
 }
+
+export interface MeetingRequest {
+    date: string;
+    startTime: string;
+    endTime: string;
+    place: string;
+    participantIds: string[] | null;
+}
+
+export interface MeetingResponse {
+    id: string;
+    date: string;
+    startTime: string;
+    endTime: string;
+    place: string;
+}
