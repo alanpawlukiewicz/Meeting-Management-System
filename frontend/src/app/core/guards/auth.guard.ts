@@ -16,7 +16,7 @@ export const authGuard = (requiredRole: Role | null = null): CanActivateFn => {
       return true;
     }
 
-    if (requiredRole == Role.Admin && userService.isAdministrator() && token)
+    if (requiredRole !== null && userService.hasRole(requiredRole) && token)
     {
         return true;
     }

@@ -18,6 +18,10 @@ export class UserService {
         () => this.currentUserSignal()?.roles.includes(Role.Admin) ?? false,
     );
 
+    hasRole(role: Role): boolean {
+        return this.currentUserSignal()?.roles.includes(role) ?? false;
+    }
+
     loadCurrentUser(): Observable<UserProfile> {
         return this.http
             .get<UserProfile>(`${this.apiUrl}/account/me`)

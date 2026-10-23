@@ -11,7 +11,7 @@ export interface UserProfile {
 }
 
 export enum Role {
-    Admin
+    Admin, Organizer
 }
 
 export interface RegisterRequest {
