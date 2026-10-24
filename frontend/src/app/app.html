@@ -3,6 +3,12 @@
     <span class="grow!"></span>
     @if (userService.isLoggedIn())
     {
+    @if (userService.isAdministrator())
+    {
+    <a matIconButton matTooltip="Manage users" routerLink="/users">
+        <mat-icon>supervisor_account</mat-icon>
+    </a>
+    }
     @if (userService.isOrganizer())
     {
     <a matIconButton matTooltip="Add new meeting" routerLink="/meeting/add">

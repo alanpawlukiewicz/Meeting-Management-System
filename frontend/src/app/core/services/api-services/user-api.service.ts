@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
-import { UserStatusCheckRequest, UserStatusCheckResponse } from '../../models/user.models';
+import { UserDto, UserStatusCheckRequest, UserStatusCheckResponse } from '../../models/user.models';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { LookupDto } from '../../models/lookup.model';
@@ -8,14 +8,26 @@ import { LookupDto } from '../../models/lookup.model';
 @Service()
 export class UserApiService {
     private readonly http = inject(HttpClient);
-    private readonly apiUrl = environment.apiUrl;
+    private readonly apiUrl = `${environment.apiUrl}/user`;
     
     checkUsersAvailabilities(request: UserStatusCheckRequest): Observable<UserStatusCheckResponse> {
-        return this.http.post<UserStatusCheckResponse>(`${this.apiUrl}/user/availabilities`, request);
+        return this.http.post<UserStatusCheckResponse>(`${this.apiUrl}/availabilities`, request);
     }
 
     lookupUsers(query: string, limit: number = 10): Observable<LookupDto[]> {
         const params = new HttpParams().set('q', query).set('limit', limit);
-        return this.http.get<LookupDto[]>(`${this.apiUrl}/user`, { params });
+        return this.http.get<LookupDto[]>(`${this.apiUrl}/lookup`, { params });
+    }
+
+    getUsersWithRoles(): Observable<UserDto[]> {
+        return this.http.get<UserDto[]>(this.apiUrl);
+    }
+
+    giveOrganizerRole(userId: string): Observable<void> {
+        return this.http.put<void>(`${this.apiUrl}/${userId}/roles/organizer`, {})
+    }
+
+    revokeOrganizerRole(userId: string): Observable<void> {
+        return this.http.delete<void>(`${this.apiUrl}/${userId}/roles/organizer`, {})
     }
 }
