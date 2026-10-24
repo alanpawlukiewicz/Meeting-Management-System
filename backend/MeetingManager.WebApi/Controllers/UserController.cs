@@ -20,9 +20,9 @@ namespace MeetingManager.WebApi.Controllers
 
         [HttpGet]
         public async Task<ActionResult<List<LookupDto>>> GetUsers(
-            [FromQuery] string query,
-            [FromQuery] int limit,
+            [FromQuery] string q,
+            [FromQuery] int? limit,
             CancellationToken ct)
-            => await _userGetterService.GetUsersForLookupAsync(query, limit, ct);
+            => await _userGetterService.GetUsersForLookupAsync(q, limit ?? 10, ct);
     }
 }

@@ -93,7 +93,7 @@ namespace MeetingManager.Core.Services
             return (await _userRepository.GetUsersWithLimitAsync(queryInLower, limit, ct)).Select(u => new LookupDto
             {
                 Id = u.Id,
-                Name = u.UserName
+                Name = u.FirstName == null || u.LastName == null ? u.UserName : $"{u.UserName} ({u.FirstName} {u.LastName})"
             }).ToList();
         }
     }
