@@ -22,12 +22,17 @@ namespace MeetingManager.WebApi.Controllers
         public async Task<ActionResult<List<UserStatusCheckResponse>>> CheckUserAvailabilities(UserStatusCheckRequest request, CancellationToken ct)
             => await _userGetterService.CheckUserAvailabilitiesAsync(request, ct);
 
-        [HttpGet]
-        public async Task<ActionResult<List<LookupDto>>> GetUsers(
+        [HttpGet("lookup")]
+        public async Task<ActionResult<List<LookupDto>>> GetUsersForLookup(
             [FromQuery] string q,
             [FromQuery] int? limit,
             CancellationToken ct)
             => await _userGetterService.GetUsersForLookupAsync(q, limit ?? 10, ct);
+
+        [HasRole(RoleName.Admin)]
+        [HttpGet]
+        public async Task<ActionResult<List<UserDto>>> GetUsers(CancellationToken ct)
+            => await _userGetterService.GetAllUsersWithRolesAsync(ct);
 
         [HasRole(RoleName.Admin)]
         [HttpPut("{userId:guid}/roles/organizer")]

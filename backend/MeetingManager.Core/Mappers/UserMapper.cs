@@ -9,9 +9,11 @@ namespace MeetingManager.Core.Mappers
         {
             return new UserDto
             {
+                Id = user.Id,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                UserName = user.UserName!
+                UserName = user.UserName!,
+                RoleNames = user.UserRoles.Select(ur => ur.Role!.Name).ToList()
             };
         }
 

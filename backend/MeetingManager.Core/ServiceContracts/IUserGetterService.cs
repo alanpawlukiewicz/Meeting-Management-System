@@ -12,5 +12,6 @@ namespace MeetingManager.Core.ServiceContracts
         Task<List<UserStatusCheckResponse>> CheckUserAvailabilitiesAsync(UserStatusCheckRequest request, CancellationToken ct = default);
 
         Task<List<LookupDto>> GetUsersForLookupAsync(string query, int limit = 10, CancellationToken ct = default);
+        Task<List<UserDto>> GetAllUsersWithRolesAsync(CancellationToken ct = default);
     }
 }

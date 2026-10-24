@@ -36,6 +36,16 @@ namespace MeetingManager.Infrastructure.Repositories
             return await DbSet.Select(u => u.Id).ToListAsync(ct);
         }
 
+        public async Task<List<User>> GetAllUsersWithRolesAsync(CancellationToken ct = default)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Include(u => u.UserRoles)
+                    .ThenInclude(ur => ur.Role)
+                .AsSplitQuery()
+                .ToListAsync(ct);
+        }
+
         public async Task<List<User>> GetUsersWithAvailabilitiesAsync(List<Guid>? userIds, DateOnly date, CancellationToken ct = default)
         {
             if (userIds == null)

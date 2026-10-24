@@ -21,29 +21,23 @@ namespace MeetingManager.Core.Services
 
         public async Task GiveUserOrganizerRoleAsync(Guid userId, CancellationToken ct = default)
         {
-            var matchingUser = await _userRepository.FindUserWithRolesAsync(userId, ct);
+            var user = await _userRepository.FindUserWithRolesAsync(userId, ct)
+                ?? throw new NotFoundException("User could not be found.");
 
-            if (matchingUser == null)
-                throw new NotFoundException("User could not be found.");
+            var organizerRole = await _roleRepository.FindRoleByNameAsync(RoleName.Organizer, ct)
+                ?? throw new NotFoundException("Organizer role could not be found.");
 
-            var organizerRole = await _roleRepository.FindRoleByNameAsync(RoleName.Organizer, ct);
+            if (user.UserRoles.Any(ur => ur.RoleId == organizerRole.Id))
+                throw new ConflictException("User already has organizer role.");
 
-            if (organizerRole == null)
-                throw new NotFoundException("Organizer role could not be found.");
-
-            if (!matchingUser.UserRoles.Any(ur => ur.Role!.Name == RoleName.Organizer))
+            _userRoleRepository.Add(new UserRole
             {
-                matchingUser.UserRoles.Add(new UserRole
-                {
-                    Id = Guid.NewGuid(),
-                    RoleId = organizerRole.Id,
-                    UserId = userId
-                });
+                Id = Guid.NewGuid(),
+                UserId = userId,
+                RoleId = organizerRole.Id
+            });
 
-                await _userRepository.SaveChangesAsync(ct);
-            }
-
-            throw new ConflictException("User already has organizer role.");
+            await _userRoleRepository.SaveChangesAsync(ct);
         }
 
         public async Task RevokeUsersOrganizerRoleAsync(Guid userId, CancellationToken ct = default)

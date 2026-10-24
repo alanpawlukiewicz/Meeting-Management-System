@@ -104,5 +104,12 @@ namespace MeetingManager.Core.Services
                     : $"{u.UserName} ({u.FirstName} {u.LastName})"
             }).ToList();
         }
+
+        public async Task<List<UserDto>> GetAllUsersWithRolesAsync(CancellationToken ct = default)
+        {
+            var result = await _userRepository.GetAllUsersWithRolesAsync(ct);
+
+            return result.Select(u => u.ToUserDto()).ToList();
+        }
     }
 }
