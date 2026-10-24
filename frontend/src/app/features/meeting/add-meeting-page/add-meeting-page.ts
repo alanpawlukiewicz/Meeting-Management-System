@@ -35,7 +35,7 @@ import { MeetingApiService } from '../../../core/services/api-services/meeting-a
 import { UserApiService } from '../../../core/services/api-services/user-api.service';
 import { minDateValidator } from '../../../core/validators/min-date.validator';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { provideNativeDateAdapter } from '@angular/material/core';
+import { MAT_DATE_LOCALE, provideNativeDateAdapter } from '@angular/material/core';
 
 /** Where to go after the meeting is created (or when the user cancels). Adjust to your routes. */
 const AFTER_SAVE_ROUTE = ['/'];
@@ -92,7 +92,9 @@ function rangeValidator(group: AbstractControl): ValidationErrors | null {
   selector: 'app-add-meeting-page',
   styleUrl: './add-meeting-page.css',
   templateUrl: './add-meeting-page.html',
-  providers: [provideNativeDateAdapter()],
+  providers: [provideNativeDateAdapter(),
+    { provide: MAT_DATE_LOCALE, useValue: 'pl-PL' }
+  ],
 })
 export class AddMeetingPage {
   private readonly meetingApi = inject(MeetingApiService);
