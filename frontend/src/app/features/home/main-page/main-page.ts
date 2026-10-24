@@ -104,12 +104,14 @@ export class MainPage implements OnInit {
           end = new Date(end.getFullYear(), end.getMonth(), end.getDate() + 1, end.getHours(), end.getMinutes());
         }
 
+        const statusLabel = dto.status == AttendanceStatus.Pending && start <= now && now < end ? "Did not respond" : STATUS_LABEL[dto.status];
+
         return {
           id: dto.id,
           creatorName: dto.creatorName,
           place: dto.place,
           status: dto.status,
-          statusLabel: STATUS_LABEL[dto.status],
+          statusLabel: statusLabel,
           start,
           end,
           startLabel: toHm(dto.startTime),
@@ -142,7 +144,7 @@ export class MainPage implements OnInit {
   });
 
   readonly pendingCount = computed(
-    () => this.items().filter((m) => m.status === AttendanceStatus.Pending).length,
+    () => this.items().filter((m) => m.status === AttendanceStatus.Pending && !m.isOngoing).length,
   );
 
   readonly isEmpty = computed(() => this.items().length === 0);

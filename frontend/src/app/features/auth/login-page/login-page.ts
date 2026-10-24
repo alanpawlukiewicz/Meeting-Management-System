@@ -55,7 +55,7 @@ export class LoginPage {
           this.loading.set(false);
         },
         error: (err: HttpErrorResponse) => {
-          this.loginErrorSignal.set(err.error["detail"]);
+          this.loginErrorSignal.set(err.error["detail"] ?? "An unexpected error occured. Check your internet connection.");
           this.loading.set(false);
         }
       });

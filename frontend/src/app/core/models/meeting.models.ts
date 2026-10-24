@@ -9,7 +9,7 @@ export interface MeetingDto {
 }
 
 export enum AttendanceStatus {
-    Pending, Accepted, Declined
+    Pending = "Pending", Accepted = "Accepted", Declined = "Declined"
 }
 
 export interface MeetingRequest {

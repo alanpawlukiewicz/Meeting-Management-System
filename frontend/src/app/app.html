@@ -3,6 +3,12 @@
     <span class="grow!"></span>
     @if (userService.isLoggedIn())
     {
+    @if (userService.isOrganizer())
+    {
+    <a matIconButton matTooltip="Add new meeting" routerLink="/meeting/add">
+        <mat-icon>calendar_add_on</mat-icon>
+    </a>
+    }
     <a matIconButton matTooltip="Set your availability" routerLink="/availability">
         <mat-icon>event_available</mat-icon>
     </a>
@@ -19,5 +25,4 @@
     </a>
     }
 </mat-toolbar>
-
 <router-outlet></router-outlet>

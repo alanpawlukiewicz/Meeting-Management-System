@@ -1,0 +1,177 @@
+<div class="mx-auto max-w-2xl px-4 py-8">
+  <header class="mb-6">
+    <h1 class="text-2xl font-semibold text-slate-900">New meeting</h1>
+    <p class="mt-1 text-sm text-slate-600">Choose when and where, then decide who to invite.</p>
+  </header>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="space-y-6" novalidate>
+    <!-- ===== DETAILS ===== -->
+    <section class="rounded-xl border border-slate-200 bg-white p-5">
+      <h2 class="mb-4 text-base font-semibold text-slate-900">Details</h2>
+
+      <div class="grid grid-rows-3 grid-cols-2 gap-2">
+        <mat-form-field appearance="outline" class="col-span-2">
+          <mat-label>Place</mat-label>
+          <input matInput formControlName="place" autocomplete="off" />
+          @if (form.controls.place.hasError('required')) {
+          <mat-error>Required</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="col-span-2">
+          <mat-label>Date</mat-label>
+          <input matInput [matDatepicker]="picker" [min]="today" formControlName="date" />
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+          @if (form.controls.date.hasError('required')) {
+          <mat-error>Required</mat-error>
+          } @else if (form.controls.date.hasError('matDatepickerMin')) {
+          <mat-error>Date cannot be in the past</mat-error>
+          }
+        </mat-form-field>
+
+        <div class="grid grid-rows-1 grid-cols-2 gap-x-2 col-span-2">
+          <mat-form-field appearance="outline">
+            <mat-label>From</mat-label>
+            <input matInput type="time" formControlName="start" />
+            @if (form.controls.start.hasError('required')) {
+            <mat-error>Required</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>To</mat-label>
+            <input matInput type="time" formControlName="end" />
+            @if (form.controls.end.hasError('required')) {
+            <mat-error>Required</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        @if (form.hasError('range')) {
+        <p class="text-sm text-red-700">The end time must be later than the start time.</p>
+        }
+      </div>
+    </section>
+
+    <!-- ===== PARTICIPANTS ===== -->
+    <section class="rounded-xl border border-slate-200 bg-white p-5">
+      <h2 class="mb-4 text-base font-semibold text-slate-900">Participants</h2>
+
+      <mat-button-toggle-group formControlName="mode" aria-label="Who to invite">
+        <mat-button-toggle value="everyone">Everyone</mat-button-toggle>
+        <mat-button-toggle value="selected">Selected people</mat-button-toggle>
+      </mat-button-toggle-group>
+
+      @switch (mode()) {
+      @case ('everyone') {
+      <p class="mt-3 text-sm text-slate-600">
+        Everyone will be invited. Availability can only be previewed when you choose specific
+        people.
+      </p>
+      }
+      @case ('selected') {
+      <div class="mt-4">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic" class="w-full">
+          <mat-label>Add people</mat-label>
+          <input matInput [formControl]="searchControl" [matAutocomplete]="auto" autocomplete="off"
+            (keydown.enter)="$event.preventDefault()" />
+          @if (searchState().loading) {
+          <mat-spinner matSuffix diameter="18" class="mr-3"></mat-spinner>
+          }
+          <mat-hint>Type a name to search</mat-hint>
+
+          <mat-autocomplete #auto="matAutocomplete" [displayWith]="clearDisplay"
+            (optionSelected)="addParticipant($event.option.value)">
+            @for (user of searchOptions(); track user.id) {
+            <mat-option [value]="user">{{ user.name }}</mat-option>
+            }
+            @if (noResults()) {
+            <mat-option disabled>No users found</mat-option>
+            }
+            @if (searchState().failed) {
+            <mat-option disabled>Search failed. Try again.</mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
+
+        @if (submitAttempted() && participantsMissing()) {
+        <p class="mt-2 text-sm text-red-700">
+          Select at least one person, or choose "Only me".
+        </p>
+        }
+
+        @if (participantRows().length) {
+        @if (availabilitySummary(); as summary) {
+        <p class="mt-4 text-sm font-medium text-slate-800">
+          {{ summary.available }} of {{ summary.total }} can attend at this time
+        </p>
+        }
+
+        <ul class="mt-2 divide-y divide-slate-200 rounded-lg border border-slate-200">
+          @for (p of participantRows(); track p.id) {
+          <li class="flex items-center gap-3 py-1 pl-3 pr-1">
+            <span class="min-w-0 flex-1 truncate text-sm text-slate-900">{{ p.name }}</span>
+
+            @switch (p.availability) {
+            @case ('available') {
+            <span
+              class="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-medium text-emerald-900">
+              <mat-icon class="badge-icon" aria-hidden="true">check_circle</mat-icon>
+              Available
+            </span>
+            }
+            @case ('unavailable') {
+            <span
+              class="inline-flex items-center gap-1 rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800">
+              <mat-icon class="badge-icon" aria-hidden="true">cancel</mat-icon>
+              Unavailable
+            </span>
+            }
+            @case ('checking') {
+            <mat-spinner diameter="16" aria-label="Checking availability"></mat-spinner>
+            }
+            }
+
+            <button mat-icon-button type="button" (click)="removeParticipant(p.id)"
+              [attr.aria-label]="'Remove ' + p.name">
+              <mat-icon>close</mat-icon>
+            </button>
+          </li>
+          }
+        </ul>
+
+        @if (checkState().status === 'error') {
+        <p class="mt-2 text-sm text-red-700">Could not check availability.</p>
+        } @else if (!canPreviewAvailability()) {
+        <p class="mt-2 text-sm text-slate-600">
+          Pick a date and a valid time range to see who is available.
+        </p>
+        } @else {
+        <p class="mt-2 text-xs text-slate-500">
+          Based on regular hours and one-time changes. People marked unavailable can still be
+          invited.
+        </p>
+        }
+        }
+      </div>
+      }
+      }
+    </section>
+
+    <!-- ===== ACTIONS ===== -->
+    <div class="flex justify-end gap-2">
+      <button mat-stroked-button type="button" (click)="cancel()" [disabled]="saving()">
+        Cancel
+      </button>
+      <button mat-flat-button type="submit" [disabled]="saving()">
+        @if (saving()) {
+        <mat-spinner diameter="18" class="mr-2 inline-block"></mat-spinner>
+        Creating…
+        } @else {
+        Create meeting
+        }
+      </button>
+    </div>
+  </form>
+</div>

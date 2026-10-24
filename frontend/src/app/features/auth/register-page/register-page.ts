@@ -64,7 +64,7 @@ export class RegisterPage {
           this.loading.set(false);
         },
         error: (err: HttpErrorResponse) => {
-          this.registerErrorSignal.set(err.error["detail"]);
+          this.registerErrorSignal.set(err.error["detail"] ?? "An unexpected error occured. Check your internet connection.");
           this.loading.set(false);
         }
       });

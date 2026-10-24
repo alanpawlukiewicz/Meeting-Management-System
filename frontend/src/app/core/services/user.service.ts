@@ -18,6 +18,10 @@ export class UserService {
         () => this.currentUserSignal()?.roles.includes(Role.Admin) ?? false,
     );
 
+    readonly isOrganizer = computed(
+        () => this.currentUserSignal()?.roles.includes(Role.Organizer) ?? false,
+    );
+
     hasRole(role: Role): boolean {
         return this.currentUserSignal()?.roles.includes(role) ?? false;
     }
