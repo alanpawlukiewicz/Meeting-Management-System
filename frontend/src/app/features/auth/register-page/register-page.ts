@@ -10,6 +10,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { passwordMatchValidator } from '../../../core/validators/password-match.validator';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   imports: [MatFormFieldModule,
@@ -17,7 +18,8 @@ import { passwordMatchValidator } from '../../../core/validators/password-match.
     ReactiveFormsModule,
     MatButtonModule,
     MatInputModule,
-    RouterLink
+    RouterLink,
+    MatProgressSpinnerModule
   ],
   selector: 'app-register-page',
   styleUrl: './register-page.css',
@@ -30,6 +32,7 @@ export class RegisterPage {
   private readonly router = inject(Router);
 
   registerErrorSignal = signal<string | null>(null);
+  loading = signal<boolean>(false);
 
   registerForm = this.fb.group({
     firstName: [''],
@@ -44,6 +47,10 @@ export class RegisterPage {
     if (this.registerForm.invalid) {
       return;
     }
+
+    this.registerErrorSignal.set(null);
+    this.loading.set(true);
+
     const request: RegisterRequest = {
       password: this.registerForm.controls.password.getRawValue() ?? '',
       userName: this.registerForm.controls.userName.getRawValue() ?? '',
@@ -53,8 +60,12 @@ export class RegisterPage {
     this.authService.register(request)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
+        next: () => {
+          this.loading.set(false);
+        },
         error: (err: HttpErrorResponse) => {
           this.registerErrorSignal.set(err.error["detail"]);
+          this.loading.set(false);
         }
       });
   }

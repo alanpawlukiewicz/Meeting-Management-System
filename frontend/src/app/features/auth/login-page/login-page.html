@@ -7,7 +7,7 @@
                 <input matInput formControlName="userName">
                 @if (loginForm.controls.userName.hasError('required'))
                 {
-                    <mat-error>User name is required.</mat-error>
+                <mat-error>User name is required.</mat-error>
                 }
             </mat-form-field>
             <mat-form-field appearance="outline">
@@ -15,14 +15,18 @@
                 <input matInput formControlName="password" type="password">
                 @if (loginForm.controls.password.hasError('required'))
                 {
-                    <mat-error>Password is required.</mat-error>
+                <mat-error>Password is required.</mat-error>
                 }
             </mat-form-field>
-            <button matButton="filled">Login</button>
+            <button matButton="filled" [showProgress]="loading()" [disabled]="loading()">
+                Login
+                <mat-progress-spinner progressIndicator mode="indeterminate" diameter="20" aria-label="Loading"
+                    tabindex="" />
+            </button>
         </form>
         @if(loginErrorSignal() !== null)
         {
-            <span class="text-sm text-error flex justify-center items-center pb-4 pt-2">{{loginErrorSignal()}}</span>
+        <span class="text-sm text-error flex justify-center items-center pb-4 pt-2">{{loginErrorSignal()}}</span>
         }
         <a matButton="text" routerLink="/register" class="text-xs!">Register instead</a>
     </mat-card>

@@ -49,7 +49,11 @@
                 <mat-error>Confirm password must be equal to password.</mat-error>
                 }
             </mat-form-field>
-            <button matButton="filled">Register</button>
+            <button matButton="filled" [showProgress]="loading()" [disabled]="loading()">
+                Register
+                <mat-progress-spinner progressIndicator mode="indeterminate" diameter="20" aria-label="Loading"
+                    tabindex="" />
+            </button>
         </form>
         @if(registerErrorSignal() !== null)
         {

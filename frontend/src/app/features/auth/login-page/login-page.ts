@@ -9,6 +9,7 @@ import { AuthService } from '../../../core/services/auth.service';
 import { LoginRequest } from '../../../core/models/auth.models';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   imports: [ReactiveFormsModule,
@@ -16,7 +17,8 @@ import { HttpErrorResponse } from '@angular/common/http';
     MatFormFieldModule,
     MatCardModule,
     MatInputModule,
-    RouterLink],
+    RouterLink,
+    MatProgressSpinnerModule],
   selector: 'app-login-page',
   styleUrl: './login-page.css',
   templateUrl: './login-page.html',
@@ -25,9 +27,10 @@ export class LoginPage {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly router = inject(Router);
+  
 
   loginErrorSignal = signal<string | null>(null);
+  loading = signal<boolean>(false);
 
   loginForm = this.fb.group({
     userName: ['', Validators.required],
@@ -39,6 +42,7 @@ export class LoginPage {
       return;
     }
     this.loginErrorSignal.set(null);
+    this.loading.set(true);
 
     const request: LoginRequest = {
       password: this.loginForm.controls.password.getRawValue() ?? '',
@@ -47,8 +51,12 @@ export class LoginPage {
     this.authService.login(request)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
+        next: () => {
+          this.loading.set(false);
+        },
         error: (err: HttpErrorResponse) => {
           this.loginErrorSignal.set(err.error["detail"]);
+          this.loading.set(false);
         }
       });
   }
