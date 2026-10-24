@@ -52,7 +52,11 @@ namespace MeetingManager.Core.Services
             else
             {
                 List<Guid> allUserIds = await _userRepository.GetAllUserIdsAsync(ct);
-                newMeeting.MeetingParticipants = allUserIds.Select(DefaultMeetingParticipant).ToList();
+                var parsedParticipants = allUserIds.Select(DefaultMeetingParticipant).ToList();
+                var creator = parsedParticipants.Single(p => p.UserId == creatorId);
+                creator.RespondedAt = DateTimeOffset.UtcNow;
+                creator.Status = Domain.Enums.AttendanceStatus.Accepted;
+                newMeeting.MeetingParticipants = parsedParticipants;
             }
 
             _meetingRepository.Add(newMeeting);
