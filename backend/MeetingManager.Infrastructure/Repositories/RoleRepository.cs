@@ -14,6 +14,11 @@ namespace MeetingManager.Infrastructure.Repositories
         {
         }
 
+        public async Task<Role?> FindRoleByNameAsync(string name, CancellationToken ct = default)
+        {
+            return await DbSet.AsNoTracking().FirstOrDefaultAsync(r => r.Name == name, ct);
+        }
+
         public async Task<List<Role>> GetUserRolesAsync(Guid userId, CancellationToken ct = default)
         {
             return await DbSet

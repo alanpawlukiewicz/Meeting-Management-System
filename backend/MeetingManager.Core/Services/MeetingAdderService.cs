@@ -9,7 +9,7 @@ namespace MeetingManager.Core.Services
 {
     public class MeetingAdderService : IMeetingAdderService
     {
-        private readonly IMeetingRepository _meetingRepository;
+        private readonly IMeetingRepository _meetingRepository; 
         private readonly IUserRepository _userRepository;
 
         public MeetingAdderService(IMeetingRepository meetingRepository, IUserRepository userRepository)

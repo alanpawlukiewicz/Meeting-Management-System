@@ -13,6 +13,7 @@ namespace MeetingManager.WebApi.Extensions
             services.AddScoped<IUserAvailabilityRepository, UserAvailabilityRepository>();
             services.AddScoped<IUserTimeOffRepository, UserTimeOffRepository>();
             services.AddScoped<IMeetingRepository, MeetingRepository>();
+            services.AddScoped<IUserRoleRepository, UserRoleRepository>();
             services.AddScoped<IMeetingParticipantRepository, MeetingParticipantRepository>();
 
             return services;
