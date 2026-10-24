@@ -9,6 +9,6 @@ namespace MeetingManager.Core.DTO
     public class StatusDto
     {
         [Required]
-        public AttendanceStatus Status { get; set; }
+        public string Status { get; set; } = null!;
     }
 }

@@ -14,6 +14,6 @@ namespace MeetingManager.Core.DTO
         public TimeOnly StartTime { get; set; }
         public TimeOnly EndTime { get; set; }
         public string Place { get; set; } = string.Empty;
-        public AttendanceStatus Status { get; set; }
+        public string Status { get; set; } = string.Empty;
     }
 }

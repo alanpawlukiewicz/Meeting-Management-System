@@ -89,11 +89,19 @@ namespace MeetingManager.Core.Services
 
         public async Task<List<LookupDto>> GetUsersForLookupAsync(string query, int limit = 10, CancellationToken ct = default)
         {
-            var queryInLower = query.ToLower();
-            return (await _userRepository.GetUsersWithLimitAsync(queryInLower, limit, ct)).Select(u => new LookupDto
+            if (string.IsNullOrWhiteSpace(query))
+                return new List<LookupDto>();
+
+            limit = Math.Clamp(limit, 1, 100);
+
+            var users = await _userRepository.GetUsersWithLimitAsync(query.Trim().ToLower(), limit, ct);
+
+            return users.Select(u => new LookupDto
             {
                 Id = u.Id,
-                Name = u.FirstName == null || u.LastName == null ? u.UserName : $"{u.UserName} ({u.FirstName} {u.LastName})"
+                Name = string.IsNullOrWhiteSpace(u.FirstName) || string.IsNullOrWhiteSpace(u.LastName)
+                    ? u.UserName
+                    : $"{u.UserName} ({u.FirstName} {u.LastName})"
             }).ToList();
         }
     }

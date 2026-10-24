@@ -15,15 +15,17 @@ namespace MeetingManager.Core.Services
     {
         private readonly IMeetingRepository _meetingRepository;
         private readonly IMeetingParticipantRepository _meetingParticipantRepository;
+        private readonly IUserRepository _userRepository;
 
-        public MeetingUpdaterService(IMeetingRepository meetingRepository, IMeetingParticipantRepository meetingParticipantRepository)
+        public MeetingUpdaterService(IMeetingRepository meetingRepository, IMeetingParticipantRepository meetingParticipantRepository, IUserRepository userRepository)
         {
             _meetingRepository = meetingRepository;
             _meetingParticipantRepository = meetingParticipantRepository;
+            _userRepository = userRepository;
         }
 
         public async Task<MeetingResponse> UpdateMeetingAsync(
-    Guid meetingId, Guid creatorId, MeetingRequest request, CancellationToken ct = default)
+                Guid meetingId, Guid creatorId, MeetingRequest request, CancellationToken ct = default)
         {
             if (request.EndTime < request.StartTime)
                 throw new ValidationException("End time must be later than start time.");
@@ -64,14 +66,23 @@ namespace MeetingManager.Core.Services
                 var existingIds = meeting.MeetingParticipants.Select(mp => mp.UserId).ToHashSet();
                 foreach (var id in requestedIds.Except(existingIds))
                 {
+                    meeting.MeetingParticipants.Add(DefaultMeetingParticipant(id));
+                }
+
+
+                if (!request.ParticipantIds.Contains(creatorId))
                     meeting.MeetingParticipants.Add(new MeetingParticipant
                     {
                         Id = Guid.NewGuid(),
-                        UserId = id,
-                        Status = AttendanceStatus.Pending,
-                        RespondedAt = null
+                        RespondedAt = DateTimeOffset.UtcNow,
+                        Status = AttendanceStatus.Accepted,
+                        UserId = creatorId
                     });
-                }
+            }
+            else
+            {
+                List<Guid> allUserIds = await _userRepository.GetAllUserIdsAsync(ct);
+                meeting.MeetingParticipants = allUserIds.Select(DefaultMeetingParticipant).ToList();
             }
 
             if (scheduleChanged)
@@ -85,6 +96,17 @@ namespace MeetingManager.Core.Services
 
             await _meetingRepository.SaveChangesAsync(ct);
             return meeting.ToMeetingResponse();
+        }
+
+        private static MeetingParticipant DefaultMeetingParticipant(Guid userId)
+        {
+            return new MeetingParticipant
+            {
+                Id = Guid.NewGuid(),
+                RespondedAt = null,
+                Status = AttendanceStatus.Pending,
+                UserId = userId
+            };
         }
     }
 }

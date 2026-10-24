@@ -1,6 +1,7 @@
 ﻿using MeetingManager.Core.DTO;
 using MeetingManager.Core.Exceptions;
 using MeetingManager.Core.ServiceContracts;
+using MeetingManager.Domain.Enums;
 using MeetingManager.Domain.RepositoryContracts;
 using System;
 using System.Collections.Generic;
@@ -24,7 +25,9 @@ namespace MeetingManager.Core.Services
             if (matchingParticipant == null)
                 throw new NotFoundException("Could not find meeting participant record.");
 
-            matchingParticipant.Status = request.Status;
+            matchingParticipant.Status = Enum.TryParse<AttendanceStatus>(request.Status, out var status) 
+                ? status 
+                : throw new ConflictException("Unsupported attendance status.");
 
             await _meetingParticipantRepository.SaveChangesAsync(ct);
         }

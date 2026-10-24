@@ -38,6 +38,8 @@ namespace MeetingManager.Core.Services
 
             if (request.ParticipantIds != null)
             {
+                newMeeting.MeetingParticipants = request.ParticipantIds.Distinct().Select(DefaultMeetingParticipant).ToList();
+
                 if (!request.ParticipantIds.Contains(creatorId))
                     newMeeting.MeetingParticipants.Add(new MeetingParticipant
                     {
@@ -46,8 +48,6 @@ namespace MeetingManager.Core.Services
                         Status = Domain.Enums.AttendanceStatus.Accepted,
                         UserId = creatorId
                     });
-
-                newMeeting.MeetingParticipants = request.ParticipantIds.Distinct().Select(DefaultMeetingParticipant).ToList();
             }
             else
             {

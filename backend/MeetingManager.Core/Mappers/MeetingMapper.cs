@@ -18,7 +18,7 @@ namespace MeetingManager.Core.Mappers
                 EndTime = meeting.EndTime,
                 StartTime = meeting.StartTime,
                 Place = meeting.Place,
-                Status = meeting.MeetingParticipants.FirstOrDefault(mp => mp.UserId == userId)!.Status
+                Status = meeting.MeetingParticipants.FirstOrDefault(mp => mp.UserId == userId)!.Status.ToString()
             };
         }
 
