@@ -4,9 +4,6 @@ using MeetingManager.Core.Mappers;
 using MeetingManager.Core.ServiceContracts;
 using MeetingManager.Domain.Entities;
 using MeetingManager.Domain.RepositoryContracts;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace MeetingManager.Core.Services
 {
@@ -88,6 +85,16 @@ namespace MeetingManager.Core.Services
             }
 
             return matchingUser.ToUserProfile();
+        }
+
+        public async Task<List<LookupDto>> GetUsersForLookupAsync(string query, int limit = 10, CancellationToken ct = default)
+        {
+            var queryInLower = query.ToLower();
+            return (await _userRepository.GetUsersWithLimitAsync(queryInLower, limit, ct)).Select(u => new LookupDto
+            {
+                Id = u.Id,
+                Name = u.UserName
+            }).ToList();
         }
     }
 }

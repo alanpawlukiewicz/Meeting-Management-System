@@ -56,5 +56,16 @@ namespace MeetingManager.Infrastructure.Repositories
                    .AsSplitQuery()
                    .ToListAsync(ct);
         }
+
+        public async Task<List<User>> GetUsersWithLimitAsync(string query, int limit = 10, CancellationToken ct = default)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(u => u.UserName.Contains(query)
+                    || (u.FirstName ?? string.Empty).Contains(query)
+                    || (u.LastName ?? string.Empty).Contains(query))
+                .Take(limit)
+                .ToListAsync(ct);
+        }
     }
 }

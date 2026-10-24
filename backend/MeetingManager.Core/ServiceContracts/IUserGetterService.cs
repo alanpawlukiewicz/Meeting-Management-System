@@ -10,5 +10,7 @@ namespace MeetingManager.Core.ServiceContracts
         Task<UserProfile> GetUserProfileAsync(Guid userId, CancellationToken ct = default);
 
         Task<List<UserStatusCheckResponse>> CheckUserAvailabilitiesAsync(UserStatusCheckRequest request, CancellationToken ct = default);
+
+        Task<List<LookupDto>> GetUsersForLookupAsync(string query, int limit = 10, CancellationToken ct = default);
     }
 }

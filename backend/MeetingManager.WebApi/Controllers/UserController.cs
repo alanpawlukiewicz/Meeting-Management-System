@@ -17,5 +17,12 @@ namespace MeetingManager.WebApi.Controllers
         [HttpPost("availabilities")]
         public async Task<ActionResult<List<UserStatusCheckResponse>>> CheckUserAvailabilities(UserStatusCheckRequest request, CancellationToken ct)
             => await _userGetterService.CheckUserAvailabilitiesAsync(request, ct);
+
+        [HttpGet]
+        public async Task<ActionResult<List<LookupDto>>> GetUsers(
+            [FromQuery] string query,
+            [FromQuery] int limit,
+            CancellationToken ct)
+            => await _userGetterService.GetUsersForLookupAsync(query, limit, ct);
     }
 }
