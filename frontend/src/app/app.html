@@ -3,6 +3,8 @@
     <span class="grow!"></span>
     @if (userService.isLoggedIn())
     {
+    <span class="text-sm text-surface-on-variant">{{userService.currentUser()?.userName }}</span>
+    <div class="border-l-2 border-gray-300 h-8 mx-3"></div>
     @if (userService.isAdministrator())
     {
     <a matIconButton matTooltip="Manage users" routerLink="/users">
