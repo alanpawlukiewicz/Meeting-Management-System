@@ -1,0 +1,20 @@
+:host {
+  display: block;
+}
+
+/* Destructive filled button (Material 3 tokens, with older MDC tokens as a fallback) */
+.danger-filled {
+  --mat-button-filled-container-color: #b91c1c;
+  --mat-button-filled-label-text-color: #ffffff;
+  --mat-button-filled-disabled-container-color: rgb(0 0 0 / 0.12);
+  --mdc-filled-button-container-color: #b91c1c;
+  --mdc-filled-button-label-text-color: #ffffff;
+}
+
+/* Destructive outlined button */
+.danger-outlined {
+  --mat-button-outlined-label-text-color: #b91c1c;
+  --mat-button-outlined-outline-color: #fca5a5;
+  --mdc-outlined-button-label-text-color: #b91c1c;
+  --mdc-outlined-button-outline-color: #fca5a5;
+}

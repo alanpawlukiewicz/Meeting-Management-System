@@ -9,6 +9,7 @@ import { AvailabilityPage } from './features/availability/availability-page/avai
 import { Role } from './core/models/auth.models';
 import { AddMeetingPage } from './features/meeting/add-meeting-page/add-meeting-page';
 import { UserPage } from './features/users/user-page/user-page';
+import { SettingsPage } from './features/users/settings-page/settings-page';
 
 export const routes: Routes = [
     {path: 'home', component: MainPage, canActivate: [authGuard()]},
@@ -17,6 +18,7 @@ export const routes: Routes = [
     {path: 'register', component: RegisterPage, canActivate: [guestGuard]},
     {path: 'meeting/add', component: AddMeetingPage, canActivate: [authGuard(Role.Organizer)]},
     {path: 'users', component: UserPage, canActivate: [authGuard(Role.Admin)]},
+    {path: 'settings', component: SettingsPage, canActivate: [authGuard()]},
     { path: '', redirectTo: '/home', pathMatch: 'full' },
     { path: '**', component: NotFoundPage },
 ];

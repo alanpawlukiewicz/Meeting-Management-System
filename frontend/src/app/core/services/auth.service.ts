@@ -5,7 +5,7 @@ import { catchError, finalize, map, Observable, of, shareReplay, switchMap, tap 
 import { Router } from '@angular/router';
 import { TokenModel } from '../models/token.model';
 import { UserService } from './user.service';
-import { LoginRequest, RegisterRequest, UserProfile } from '../models/auth.models';
+import { LoginRequest, PasswordUpdateRequest, RegisterRequest, UserProfile } from '../models/auth.models';
 
 @Service()
 export class AuthService {
@@ -88,6 +88,10 @@ export class AuthService {
         this.clearToken();
         this.userService.clearUser();
         this.router.navigate(['/login']);
+    }
+
+    changeUserPassword(request: PasswordUpdateRequest): Observable<void> {
+        return this.http.put<void>(`${this.apiUrl}/auth/password`, request);
     }
 
     private scheduleRefresh(): void {

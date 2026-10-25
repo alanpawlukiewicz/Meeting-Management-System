@@ -5,9 +5,14 @@
             <mat-form-field appearance="outline">
                 <mat-label>User Name</mat-label>
                 <input matInput formControlName="userName">
-                @if (registerForm.controls.userName.hasError('required'))
-                {
-                <mat-error>User name is required.</mat-error>
+                @if (registerForm.controls.userName.pending) {
+                <mat-hint>Checking username availability</mat-hint>
+                }
+                @if (registerForm.controls.userName.hasError('required')) {
+                <mat-error>Required</mat-error>
+                }
+                @if (registerForm.controls.userName.hasError('usernameTaken')) {
+                <mat-error>Username is taken</mat-error>
                 }
             </mat-form-field>
             <div class="grid grid-rows-1 grid-cols-2 gap-2">
@@ -49,7 +54,7 @@
                 <mat-error>Confirm password must be equal to password.</mat-error>
                 }
             </mat-form-field>
-            <button matButton="filled" [showProgress]="loading()" [disabled]="loading()">
+            <button matButton="filled" [showProgress]="loading()" [disabled]="loading() || registerForm.invalid">
                 Register
                 <mat-progress-spinner progressIndicator mode="indeterminate" diameter="20" aria-label="Loading"
                     tabindex="" />

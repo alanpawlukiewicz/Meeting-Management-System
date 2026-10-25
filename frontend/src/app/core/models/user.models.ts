@@ -20,3 +20,16 @@ export interface UserDto {
     lastName: string;
     roleNames: Role[];
 }
+
+export interface UserUpdateRequest {
+    userName: string | null;
+    firstName: string | null;
+    lastName: string | null;
+}
+
+export interface UserResponse {
+    id: string;
+    userName: string;
+    firstName: string | null;
+    lastName: string | null;
+}

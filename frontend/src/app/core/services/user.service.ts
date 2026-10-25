@@ -3,6 +3,7 @@ import { computed, inject, Service, signal } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { Observable, tap } from 'rxjs';
 import { Role, UserProfile } from '../models/auth.models';
+import { UserResponse } from '../models/user.models';
 
 @Service()
 export class UserService {
@@ -34,5 +35,14 @@ export class UserService {
 
     clearUser(): void {
         this.currentUserSignal.set(null);
+    }
+
+    setUser(user: UserResponse): void {
+        this.currentUserSignal.set({
+            firstName: user.firstName,
+            lastName: user.lastName,
+            roles: this.currentUserSignal()?.roles ?? [],
+            userName: user.userName
+        })
     }
 }

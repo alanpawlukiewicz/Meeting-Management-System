@@ -5,8 +5,8 @@ export interface LoginRequest {
 
 export interface UserProfile {
     userName: string;
-    firstName: string;
-    lastName: string;
+    firstName: string | null;
+    lastName: string | null;
     roles: Role[];
 }
 
@@ -19,4 +19,9 @@ export interface RegisterRequest {
     firstName: string | null;
     lastName: string | null;
     password: string;
+}
+
+export interface PasswordUpdateRequest {
+    oldPassword: string;
+    newPassword: string;
 }

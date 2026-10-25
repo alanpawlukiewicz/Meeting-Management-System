@@ -9,15 +9,11 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { UserDto } from '../../../core/models/user.models';
 import { UserApiService } from '../../../core/services/api-services/user-api.service';
+import { Role } from '../../../core/models/auth.models';
 
-type RoleName = UserDto['roleNames'][number];
 type UserFilter = 'all' | 'organizers' | 'others';
 
-/**
- * Replace the body with `role === Role.Organizer` if your Role is an enum
- * whose values are not the plain strings "Organizer" / "organizer".
- */
-const isOrganizerRole = (role: RoleName): boolean => String(role).toLowerCase() === 'organizer';
+const isOrganizerRole = (role: Role): boolean => role === Role.Organizer;
 
 const initialsOf = (user: UserDto): string => {
   const letters = `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.trim();
@@ -44,10 +40,6 @@ export class UserPage implements OnInit {
 
   // --- state ---
   private readonly users = signal<UserDto[]>([]);
-  /**
-   * Organizer role changes made on this page. They take precedence over `roleNames`
-   * (which is not rewritten locally) and are cleared whenever the list is reloaded.
-   */
   private readonly organizerOverrides = signal<ReadonlyMap<string, boolean>>(new Map());
   private readonly updatingIds = signal<ReadonlySet<string>>(new Set());
 

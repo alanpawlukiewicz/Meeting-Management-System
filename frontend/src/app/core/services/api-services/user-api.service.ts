@@ -30,4 +30,9 @@ export class UserApiService {
     revokeOrganizerRole(userId: string): Observable<void> {
         return this.http.delete<void>(`${this.apiUrl}/${userId}/roles/organizer`, {})
     }
+
+    checkUserNameAvailability(username: string): Observable<boolean> {
+        const params = new HttpParams().set('username', username);
+        return this.http.get<boolean>(`${this.apiUrl}/availability`, { params });
+    }
 }

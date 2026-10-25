@@ -11,6 +11,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { passwordMatchValidator } from '../../../core/validators/password-match.validator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { usernameTakenValidator } from '../../../core/validators/username-taken.validator';
+import { UserApiService } from '../../../core/services/api-services/user-api.service';
 
 @Component({
   imports: [MatFormFieldModule,
@@ -29,7 +31,7 @@ export class RegisterPage {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly router = inject(Router);
+  private readonly userApiService = inject(UserApiService);
 
   registerErrorSignal = signal<string | null>(null);
   loading = signal<boolean>(false);
@@ -37,7 +39,11 @@ export class RegisterPage {
   registerForm = this.fb.group({
     firstName: [''],
     lastName: [''],
-    userName: ['', Validators.required],
+    userName: ['', {
+      validators: [Validators.required],
+      asyncValidators: [usernameTakenValidator(this.userApiService, () => '')],
+      updateOn: 'blur',
+    }],
     password: ['', [Validators.required, Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/), Validators.minLength(8)]],
     confirmPassword: ['', [Validators.required, passwordMatchValidator('password')]],
   },
