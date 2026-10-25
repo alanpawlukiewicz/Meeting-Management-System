@@ -1,9 +1,6 @@
 ﻿using MeetingManager.Core.DTO;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace MeetingManager.Core.ServiceContracts
+namespace MeetingManager.Core.ServiceContracts.UserServiceContracts
 {
     public interface IUserTimeOffAdderService
     {

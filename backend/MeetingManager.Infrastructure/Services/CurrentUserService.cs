@@ -1,6 +1,5 @@
 ﻿using MeetingManager.Core.ServiceContracts;
 using Microsoft.AspNetCore.Http;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace MeetingManager.Infrastructure.Services

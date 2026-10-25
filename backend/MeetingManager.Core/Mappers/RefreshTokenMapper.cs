@@ -1,9 +1,5 @@
 ﻿using MeetingManager.Core.DTO;
-using MeetingManager.Core.ServiceContracts;
 using MeetingManager.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace MeetingManager.Core.Mappers
 {

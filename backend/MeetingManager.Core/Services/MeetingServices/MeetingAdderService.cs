@@ -1,15 +1,15 @@
 ﻿using MeetingManager.Core.DTO;
 using MeetingManager.Core.Mappers;
-using MeetingManager.Core.ServiceContracts;
+using MeetingManager.Core.ServiceContracts.MeetingServiceContracts;
 using MeetingManager.Domain.Entities;
 using MeetingManager.Domain.RepositoryContracts;
 using System.ComponentModel.DataAnnotations;
 
-namespace MeetingManager.Core.Services
+namespace MeetingManager.Core.Services.MeetingServices
 {
     public class MeetingAdderService : IMeetingAdderService
     {
-        private readonly IMeetingRepository _meetingRepository; 
+        private readonly IMeetingRepository _meetingRepository;
         private readonly IUserRepository _userRepository;
 
         public MeetingAdderService(IMeetingRepository meetingRepository, IUserRepository userRepository)

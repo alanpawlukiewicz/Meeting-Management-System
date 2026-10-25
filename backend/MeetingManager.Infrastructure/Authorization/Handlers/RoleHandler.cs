@@ -1,10 +1,6 @@
 ﻿using MeetingManager.Core.ServiceContracts;
-using MeetingManager.Infrastructure.Authorization.PolicyProviders;
 using MeetingManager.Infrastructure.Authorization.Requirements;
 using Microsoft.AspNetCore.Authorization;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace MeetingManager.Infrastructure.Authorization.Handlers
 {

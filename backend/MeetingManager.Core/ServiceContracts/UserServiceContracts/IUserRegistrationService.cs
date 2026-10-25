@@ -1,6 +1,6 @@
 ﻿using MeetingManager.Core.DTO;
 
-namespace MeetingManager.Core.ServiceContracts
+namespace MeetingManager.Core.ServiceContracts.UserServiceContracts
 {
     public interface IUserRegistrationService
     {

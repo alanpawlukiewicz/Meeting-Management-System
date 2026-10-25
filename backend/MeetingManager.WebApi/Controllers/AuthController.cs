@@ -2,7 +2,7 @@
 using MeetingManager.Core.Exceptions;
 using MeetingManager.Core.Mappers;
 using MeetingManager.Core.ServiceContracts;
-using MeetingManager.Core.Services;
+using MeetingManager.Core.ServiceContracts.UserServiceContracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

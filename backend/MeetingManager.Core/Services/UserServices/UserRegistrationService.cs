@@ -1,12 +1,11 @@
 ﻿using MeetingManager.Core.DTO;
 using MeetingManager.Core.Exceptions;
-using MeetingManager.Core.Mappers;
 using MeetingManager.Core.ServiceContracts;
+using MeetingManager.Core.ServiceContracts.UserServiceContracts;
 using MeetingManager.Domain.Entities;
 using MeetingManager.Domain.RepositoryContracts;
-using System.Net;
 
-namespace MeetingManager.Core.Services
+namespace MeetingManager.Core.Services.UserServices
 {
     public class UserRegistrationService : IUserRegistrationService
     {

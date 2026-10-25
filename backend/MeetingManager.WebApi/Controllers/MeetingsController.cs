@@ -1,8 +1,8 @@
 ﻿using MeetingManager.Core.Constants;
 using MeetingManager.Core.DTO;
 using MeetingManager.Core.ServiceContracts;
+using MeetingManager.Core.ServiceContracts.MeetingServiceContracts;
 using MeetingManager.Infrastructure.Authorization.Attributes;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MeetingManager.WebApi.Controllers
@@ -34,7 +34,7 @@ namespace MeetingManager.WebApi.Controllers
             await _meetingAttendanceUpdaterService.ChangeAttendanceAsync(meetingId, _currentUserService.UserId, request, ct);
             return NoContent();
         }
-         
+
         [HasRole(RoleName.Organizer)]
         [HttpPost]
         public async Task<ActionResult<MeetingResponse>> AddMeeting(MeetingRequest request, CancellationToken ct)

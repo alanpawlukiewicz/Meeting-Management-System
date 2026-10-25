@@ -1,6 +1,6 @@
 ﻿using MeetingManager.Core.DTO;
 using MeetingManager.Core.ServiceContracts;
-using Microsoft.AspNetCore.Authorization;
+using MeetingManager.Core.ServiceContracts.UserServiceContracts;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MeetingManager.WebApi.Controllers

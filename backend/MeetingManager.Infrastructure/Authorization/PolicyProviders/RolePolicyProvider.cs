@@ -1,5 +1,4 @@
-﻿using MeetingManager.Core.ServiceContracts;
-using MeetingManager.Infrastructure.Authorization.Requirements;
+﻿using MeetingManager.Infrastructure.Authorization.Requirements;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 

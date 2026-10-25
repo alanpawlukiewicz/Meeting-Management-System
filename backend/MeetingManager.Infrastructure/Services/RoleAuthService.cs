@@ -1,9 +1,6 @@
 ﻿using MeetingManager.Core.ServiceContracts;
 using MeetingManager.Domain.RepositoryContracts;
 using Microsoft.Extensions.Caching.Memory;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace MeetingManager.Infrastructure.Services
 {

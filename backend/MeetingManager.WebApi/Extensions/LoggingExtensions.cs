@@ -1,5 +1,4 @@
-﻿using MeetingManager.Infrastructure.Configuration;
-using Microsoft.AspNetCore.HttpLogging;
+﻿using Microsoft.AspNetCore.HttpLogging;
 using Serilog;
 using Serilog.Events;
 
@@ -11,7 +10,7 @@ namespace MeetingManager.WebApi.Extensions
         {
             services.AddHttpLogging(logging =>
             {
-                logging.LoggingFields = HttpLoggingFields.RequestProperties 
+                logging.LoggingFields = HttpLoggingFields.RequestProperties
                 | HttpLoggingFields.ResponsePropertiesAndHeaders;
             });
 

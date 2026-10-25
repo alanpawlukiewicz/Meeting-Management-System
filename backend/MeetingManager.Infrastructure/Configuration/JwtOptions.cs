@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MeetingManager.Infrastructure.Configuration
+﻿namespace MeetingManager.Infrastructure.Configuration
 {
     public class JwtOptions
     {

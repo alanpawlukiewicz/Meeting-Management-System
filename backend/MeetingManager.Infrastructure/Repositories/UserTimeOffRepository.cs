@@ -2,9 +2,6 @@
 using MeetingManager.Domain.RepositoryContracts;
 using MeetingManager.Infrastructure.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace MeetingManager.Infrastructure.Repositories
 {

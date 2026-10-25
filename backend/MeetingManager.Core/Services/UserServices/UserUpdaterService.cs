@@ -1,10 +1,10 @@
 ﻿using MeetingManager.Core.Constants;
 using MeetingManager.Core.Exceptions;
-using MeetingManager.Core.ServiceContracts;
+using MeetingManager.Core.ServiceContracts.UserServiceContracts;
 using MeetingManager.Domain.Entities;
 using MeetingManager.Domain.RepositoryContracts;
 
-namespace MeetingManager.Core.Services
+namespace MeetingManager.Core.Services.UserServices
 {
     public class UserUpdaterService : IUserUpdaterService
     {

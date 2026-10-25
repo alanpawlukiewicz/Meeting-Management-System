@@ -3,9 +3,6 @@ using MeetingManager.Core.Mappers;
 using MeetingManager.Core.ServiceContracts;
 using MeetingManager.Domain.Entities;
 using MeetingManager.Domain.RepositoryContracts;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace MeetingManager.Core.Services
 {

@@ -1,15 +1,12 @@
 ﻿using MeetingManager.Core.DTO;
 using MeetingManager.Core.Exceptions;
 using MeetingManager.Core.Mappers;
-using MeetingManager.Core.ServiceContracts;
+using MeetingManager.Core.ServiceContracts.MeetingServiceContracts;
 using MeetingManager.Domain.Entities;
 using MeetingManager.Domain.Enums;
 using MeetingManager.Domain.RepositoryContracts;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace MeetingManager.Core.Services
+namespace MeetingManager.Core.Services.MeetingServices
 {
     public class MeetingUpdaterService : IMeetingUpdaterService
     {

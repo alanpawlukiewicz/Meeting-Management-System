@@ -1,5 +1,9 @@
 ﻿using MeetingManager.Core.ServiceContracts;
+using MeetingManager.Core.ServiceContracts.MeetingServiceContracts;
+using MeetingManager.Core.ServiceContracts.UserServiceContracts;
 using MeetingManager.Core.Services;
+using MeetingManager.Core.Services.MeetingServices;
+using MeetingManager.Core.Services.UserServices;
 using MeetingManager.Infrastructure.Authorization.Handlers;
 using MeetingManager.Infrastructure.Authorization.PolicyProviders;
 using MeetingManager.Infrastructure.Services;

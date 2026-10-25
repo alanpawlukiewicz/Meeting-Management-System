@@ -1,14 +1,11 @@
 ﻿using MeetingManager.Core.DTO;
 using MeetingManager.Core.Exceptions;
 using MeetingManager.Core.Mappers;
-using MeetingManager.Core.ServiceContracts;
+using MeetingManager.Core.ServiceContracts.UserServiceContracts;
 using MeetingManager.Domain.Entities;
 using MeetingManager.Domain.RepositoryContracts;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace MeetingManager.Core.Services
+namespace MeetingManager.Core.Services.UserServices
 {
     public class UserTimeOffAdderService : IUserTimeOffAdderService
     {
