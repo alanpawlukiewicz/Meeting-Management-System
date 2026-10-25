@@ -13,12 +13,14 @@ namespace MeetingManager.WebApi.Controllers
         private readonly IAuthService _authService;
         private readonly IRefreshTokenDeleterService _refreshTokenDeleterService;
         private readonly IUserRegistrationService _userRegistrationService;
+        private readonly ICurrentUserService _currentUserService;
 
-        public AuthController(IAuthService authService, IRefreshTokenDeleterService refreshTokenDeleterService, IUserRegistrationService userRegistrationService)
+        public AuthController(IAuthService authService, IRefreshTokenDeleterService refreshTokenDeleterService, IUserRegistrationService userRegistrationService, ICurrentUserService currentUserService)
         {
             _authService = authService;
             _refreshTokenDeleterService = refreshTokenDeleterService;
             _userRegistrationService = userRegistrationService;
+            _currentUserService = currentUserService;
         }
 
         [AllowAnonymous]
@@ -83,6 +85,13 @@ namespace MeetingManager.WebApi.Controllers
                 Response.Cookies.Delete("refreshToken", RefreshCookieOptions());
                 throw;
             }
+        }
+
+        [HttpPut("password")]
+        public async Task<IActionResult> UpdateUserPassword(PasswordUpdateRequest request, CancellationToken ct)
+        {
+            await _authService.UpdateUserPasswordAsync(_currentUserService.UserId, request, ct);
+            return NoContent();
         }
 
         private static CookieOptions RefreshCookieOptions(DateTimeOffset? expires = null)

@@ -28,6 +28,17 @@ namespace MeetingManager.Core.Mappers
             };
         }
 
+        public static UserResponse ToUserResponse(this User user)
+        {
+            return new UserResponse
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                UserName = user.UserName
+            };
+        }
+
         public static UserAvailabilityDto ToUserAvailabilityDto(this UserAvailability userAvailability)
         {
             return new UserAvailabilityDto

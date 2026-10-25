@@ -132,5 +132,20 @@ namespace MeetingManager.Core.Services
 
             return authResponse;
         }
+
+        public async Task UpdateUserPasswordAsync(Guid userId, PasswordUpdateRequest request, CancellationToken ct = default)
+        {
+            var matchingUser = await _userRepository.FindUserAsync(userId, ct);
+
+            if (matchingUser == null)
+                throw new NotFoundException("User could not be found.");
+
+            if (!_passwordHasher.Verify(request.OldPassword, matchingUser.PasswordHash))
+                throw new ValidationException("Invalid old password.");
+
+            matchingUser.PasswordHash = _passwordHasher.Hash(request.NewPassword);
+
+            await _userRepository.SaveChangesAsync(ct);
+        }
     }
 }

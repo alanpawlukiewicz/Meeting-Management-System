@@ -1,5 +1,7 @@
 ﻿using MeetingManager.Core.Constants;
+using MeetingManager.Core.DTO;
 using MeetingManager.Core.Exceptions;
+using MeetingManager.Core.Mappers;
 using MeetingManager.Core.ServiceContracts.UserServiceContracts;
 using MeetingManager.Domain.Entities;
 using MeetingManager.Domain.RepositoryContracts;
@@ -55,6 +57,22 @@ namespace MeetingManager.Core.Services.UserServices
             _userRoleRepository.Remove(matchingUserRole);
 
             await _userRoleRepository.SaveChangesAsync(ct);
+        }
+
+        public async Task<UserResponse> UpdateUserProfile(Guid userId, UserUpdateRequest request, CancellationToken ct = default)
+        {
+            var matchingUser = await _userRepository.FindUserAsync(userId, ct);
+
+            if (matchingUser == null)
+                throw new NotFoundException("User could not be found.");
+
+            matchingUser.UserName = request.UserName ?? matchingUser.UserName;
+            matchingUser.FirstName = request.FirstName ?? matchingUser.FirstName;
+            matchingUser.LastName = request.LastName ?? matchingUser.LastName;
+
+            await _userRepository.SaveChangesAsync(ct);
+
+            return matchingUser.ToUserResponse();
         }
     }
 }
