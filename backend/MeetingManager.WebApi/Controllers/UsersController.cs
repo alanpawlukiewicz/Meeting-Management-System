@@ -2,6 +2,7 @@
 using MeetingManager.Core.DTO;
 using MeetingManager.Core.ServiceContracts.UserServiceContracts;
 using MeetingManager.Infrastructure.Authorization.Attributes;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MeetingManager.WebApi.Controllers
@@ -48,5 +49,10 @@ namespace MeetingManager.WebApi.Controllers
             await _userUpdaterService.RevokeUsersOrganizerRoleAsync(userId, ct);
             return NoContent();
         }
+
+        [AllowAnonymous]
+        [HttpGet("availability")]
+        public async Task<ActionResult<bool>> CheckUserNameAvailability([FromQuery] string username, CancellationToken ct)
+            => await _userGetterService.CheckUserNameAvailbility(username, ct);
     }
 }

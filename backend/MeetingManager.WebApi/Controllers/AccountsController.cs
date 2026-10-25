@@ -1,6 +1,7 @@
 ﻿using MeetingManager.Core.DTO;
 using MeetingManager.Core.ServiceContracts;
 using MeetingManager.Core.ServiceContracts.UserServiceContracts;
+using MeetingManager.WebApi.Constants;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MeetingManager.WebApi.Controllers
@@ -35,6 +36,9 @@ namespace MeetingManager.WebApi.Controllers
         public async Task<IActionResult> DeleteUser(CancellationToken ct)
         {
             await _userDeleterService.DeleteUserAsync(_currentUserService.UserId, ct);
+
+            Response.Cookies.Delete("refreshToken", CustomCookieOptions.RefreshCookieOptions());
+
             return NoContent();
         }
     }

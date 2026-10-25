@@ -3,6 +3,7 @@ using MeetingManager.Core.Exceptions;
 using MeetingManager.Core.Mappers;
 using MeetingManager.Core.ServiceContracts;
 using MeetingManager.Core.ServiceContracts.UserServiceContracts;
+using MeetingManager.WebApi.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -32,7 +33,7 @@ namespace MeetingManager.WebApi.Controllers
 
             var response = await _userRegistrationService.RegisterUserAsync(request, ipAddress, userAgent, ct);
 
-            Response.Cookies.Append("refreshToken", response.RefreshToken!, RefreshCookieOptions(response.RefreshTokenExpiration));
+            Response.Cookies.Append("refreshToken", response.RefreshToken!, CustomCookieOptions.RefreshCookieOptions(response.RefreshTokenExpiration));
             return response.ToJwtTokenResponse();
         }
 
@@ -45,7 +46,7 @@ namespace MeetingManager.WebApi.Controllers
 
             var response = await _authService.Login(request, ipAddress, userAgent, ct);
 
-            Response.Cookies.Append("refreshToken", response.RefreshToken!, RefreshCookieOptions(response.RefreshTokenExpiration));
+            Response.Cookies.Append("refreshToken", response.RefreshToken!, CustomCookieOptions.RefreshCookieOptions(response.RefreshTokenExpiration));
             return response.ToJwtTokenResponse();
         }
 
@@ -61,7 +62,7 @@ namespace MeetingManager.WebApi.Controllers
 
             await _refreshTokenDeleterService.DeleteTokenAsync(refreshToken, ct);
 
-            Response.Cookies.Delete("refreshToken", RefreshCookieOptions());
+            Response.Cookies.Delete("refreshToken", CustomCookieOptions.RefreshCookieOptions());
 
             return NoContent();
         }
@@ -77,12 +78,12 @@ namespace MeetingManager.WebApi.Controllers
             {
                 var response = await _authService.RefreshTokensAsync(refreshToken, ipAddress, userAgent, ct);
 
-                Response.Cookies.Append("refreshToken", response.RefreshToken!, RefreshCookieOptions(response.RefreshTokenExpiration));
+                Response.Cookies.Append("refreshToken", response.RefreshToken!, CustomCookieOptions.RefreshCookieOptions(response.RefreshTokenExpiration));
                 return response.ToJwtTokenResponse();
             }
             catch (InvalidRefreshTokenException)
             {
-                Response.Cookies.Delete("refreshToken", RefreshCookieOptions());
+                Response.Cookies.Delete("refreshToken", CustomCookieOptions.RefreshCookieOptions());
                 throw;
             }
         }
@@ -92,18 +93,6 @@ namespace MeetingManager.WebApi.Controllers
         {
             await _authService.UpdateUserPasswordAsync(_currentUserService.UserId, request, ct);
             return NoContent();
-        }
-
-        private static CookieOptions RefreshCookieOptions(DateTimeOffset? expires = null)
-        {
-            return new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Lax,
-                Path = "/api/auth",
-                Expires = expires
-            };
         }
     }
 }

@@ -10,5 +10,6 @@ namespace MeetingManager.Core.ServiceContracts.UserServiceContracts
 
         Task<List<LookupDto>> GetUsersForLookupAsync(string query, int limit = 10, CancellationToken ct = default);
         Task<List<UserDto>> GetAllUsersWithRolesAsync(CancellationToken ct = default);
+        Task<bool> CheckUserNameAvailbility(string username, CancellationToken ct = default);
     }
 }

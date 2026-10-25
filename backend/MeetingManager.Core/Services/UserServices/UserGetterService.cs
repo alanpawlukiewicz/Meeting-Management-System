@@ -111,5 +111,10 @@ namespace MeetingManager.Core.Services.UserServices
 
             return result.Select(u => u.ToUserDto()).ToList();
         }
+
+        public async Task<bool> CheckUserNameAvailbility(string username, CancellationToken ct = default)
+        {
+            return await _userRepository.FindUserByLoginAsync(username, ct) == null;
+        }
     }
 }
