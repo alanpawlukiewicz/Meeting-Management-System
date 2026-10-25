@@ -7,21 +7,21 @@ import { environment } from '../../../../environments/environment';
 @Service()
 export class MeetingApiService {
     private readonly http = inject(HttpClient);
-    private readonly apiUrl = environment.apiUrl;
+    private readonly apiUrl = `${environment.apiUrl}/meetings`;
 
     GetUserMeetings(): Observable<MeetingDto[]> {
-        return this.http.get<MeetingDto[]>(`${this.apiUrl}/meeting/me`);
+        return this.http.get<MeetingDto[]>(`${this.apiUrl}/me`);
     }
 
     changeAttendanceStatus(meetingId: string, status: AttendanceStatus): Observable<void> {
-        return this.http.put<void>(`${this.apiUrl}/meeting/${meetingId}/attendance`, {status: status});
+        return this.http.put<void>(`${this.apiUrl}/${meetingId}/attendance`, {status: status});
     }
 
     addMeeting(request: MeetingRequest): Observable<MeetingResponse> {
-        return this.http.post<MeetingResponse>(`${this.apiUrl}/meeting`, request);
+        return this.http.post<MeetingResponse>(this.apiUrl, request);
     }
 
     updateMeeting(meetingId: string, request: MeetingRequest): Observable<MeetingResponse> {
-        return this.http.put<MeetingResponse>(`${this.apiUrl}/meeting/${meetingId}`, request);
+        return this.http.put<MeetingResponse>(`${this.apiUrl}/${meetingId}`, request);
     }
 }

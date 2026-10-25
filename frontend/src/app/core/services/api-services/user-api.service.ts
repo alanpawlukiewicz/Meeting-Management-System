@@ -8,7 +8,7 @@ import { LookupDto } from '../../models/lookup.model';
 @Service()
 export class UserApiService {
     private readonly http = inject(HttpClient);
-    private readonly apiUrl = `${environment.apiUrl}/user`;
+    private readonly apiUrl = `${environment.apiUrl}/users`;
     
     checkUsersAvailabilities(request: UserStatusCheckRequest): Observable<UserStatusCheckResponse> {
         return this.http.post<UserStatusCheckResponse>(`${this.apiUrl}/availabilities`, request);

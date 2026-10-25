@@ -5,13 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MeetingManager.WebApi.Controllers
 {
-    public class AvailabilityController : DefaultControllerBase
+    public class AvailabilitiesController : DefaultControllerBase
     {
         private readonly IUserAvailabilityUpdaterService _userAvailabilityUpdaterService;
         private readonly IUserAvailabilityGetterService _userAvailabilityGetterService;
         private readonly ICurrentUserService _currentUserService;
 
-        public AvailabilityController(IUserAvailabilityUpdaterService userAvailabilityUpdaterService, ICurrentUserService currentUserService, IUserAvailabilityGetterService userAvailabilityGetterService)
+        public AvailabilitiesController(IUserAvailabilityUpdaterService userAvailabilityUpdaterService, ICurrentUserService currentUserService, IUserAvailabilityGetterService userAvailabilityGetterService)
         {
             _userAvailabilityUpdaterService = userAvailabilityUpdaterService;
             _currentUserService = currentUserService;

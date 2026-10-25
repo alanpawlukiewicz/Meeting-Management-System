@@ -7,13 +7,13 @@ import { Observable } from 'rxjs';
 @Service()
 export class AvailabilityApiService {
     private readonly http = inject(HttpClient);
-    private readonly apiUrl = environment.apiUrl;
+    private readonly apiUrl = `${environment.apiUrl}/availabilities`;
 
     updateAvailabilities(reguestList: UserAvailabilityDto[]): Observable<UserAvailabilityDto[]> {
-        return this.http.put<UserAvailabilityDto[]>(`${this.apiUrl}/availability/me`, reguestList);
+        return this.http.put<UserAvailabilityDto[]>(`${this.apiUrl}/me`, reguestList);
     }
 
     getAvailabilities(): Observable<UserAvailabilityDetails> {
-        return this.http.get<UserAvailabilityDetails>(`${this.apiUrl}/availability/me`);
+        return this.http.get<UserAvailabilityDetails>(`${this.apiUrl}/me`);
     }
 }

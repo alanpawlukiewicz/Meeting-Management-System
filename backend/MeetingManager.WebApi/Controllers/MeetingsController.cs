@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MeetingManager.WebApi.Controllers
 {
-    public class MeetingController : DefaultControllerBase
+    public class MeetingsController : DefaultControllerBase
     {
         private readonly IMeetingGetterService _meetingGetterService;
         private readonly ICurrentUserService _currentUserService;
@@ -15,7 +15,7 @@ namespace MeetingManager.WebApi.Controllers
         private readonly IMeetingAdderService _meetingAdderService;
         private readonly IMeetingUpdaterService _meetingUpdaterService;
 
-        public MeetingController(IMeetingGetterService meetingGetterService, ICurrentUserService currentUserService, IMeetingAttendanceUpdaterService meetingAttendanceUpdaterService, IMeetingAdderService meetingAdderService, IMeetingUpdaterService meetingUpdaterService)
+        public MeetingsController(IMeetingGetterService meetingGetterService, ICurrentUserService currentUserService, IMeetingAttendanceUpdaterService meetingAttendanceUpdaterService, IMeetingAdderService meetingAdderService, IMeetingUpdaterService meetingUpdaterService)
         {
             _meetingGetterService = meetingGetterService;
             _currentUserService = currentUserService;

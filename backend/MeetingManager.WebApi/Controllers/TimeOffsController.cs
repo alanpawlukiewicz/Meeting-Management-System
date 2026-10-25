@@ -5,14 +5,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MeetingManager.WebApi.Controllers
 {
-    [Route("api/time-off")]
-    public class TimeOffController : DefaultControllerBase
+    [Route("api/time-offs")]
+    public class TimeOffsController : DefaultControllerBase
     {
         private readonly IUserTimeOffAdderService _userTimeOffAdderService;
         private readonly IUserTimeOffDeleterService _userTimeOffDeleterService;
         private readonly ICurrentUserService _currentUserService;
 
-        public TimeOffController(IUserTimeOffAdderService userTimeOffAdderService, ICurrentUserService currentUserService, IUserTimeOffDeleterService userTimeOffDeleterService)
+        public TimeOffsController(IUserTimeOffAdderService userTimeOffAdderService, ICurrentUserService currentUserService, IUserTimeOffDeleterService userTimeOffDeleterService)
         {
             _userTimeOffAdderService = userTimeOffAdderService;
             _currentUserService = currentUserService;

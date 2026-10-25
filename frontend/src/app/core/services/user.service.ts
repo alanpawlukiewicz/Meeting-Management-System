@@ -28,7 +28,7 @@ export class UserService {
 
     loadCurrentUser(): Observable<UserProfile> {
         return this.http
-            .get<UserProfile>(`${this.apiUrl}/account/me`)
+            .get<UserProfile>(`${this.apiUrl}/accounts/me`)
             .pipe(tap((user) => this.currentUserSignal.set(user)));
     }
 

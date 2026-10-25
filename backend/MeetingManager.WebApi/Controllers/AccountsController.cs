@@ -5,11 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MeetingManager.WebApi.Controllers
 {
-    public class AccountController : DefaultControllerBase
+    public class AccountsController : DefaultControllerBase
     {
         private readonly IUserGetterService _userGetterService;
         private readonly ICurrentUserService _currentUserService;
-        public AccountController(IUserGetterService userGetterService, ICurrentUserService currentUserService)
+        public AccountsController(IUserGetterService userGetterService, ICurrentUserService currentUserService)
         {
             _userGetterService = userGetterService;
             _currentUserService = currentUserService;

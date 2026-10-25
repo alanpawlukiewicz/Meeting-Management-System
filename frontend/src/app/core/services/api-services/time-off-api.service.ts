@@ -7,13 +7,13 @@ import { environment } from '../../../../environments/environment';
 @Service()
 export class TimeOffApiService {
     private readonly http = inject(HttpClient);
-    private readonly apiUrl = environment.apiUrl;
+    private readonly apiUrl = `${environment.apiUrl}/time-offs`;
 
     addTimeOff(request: UserTimeOffAddRequest): Observable<UserTimeOffResponse> {
-        return this.http.post<UserTimeOffResponse>(`${this.apiUrl}/time-off/me`, request);
+        return this.http.post<UserTimeOffResponse>(`${this.apiUrl}/me`, request);
     }
 
     deleteTimeOff(id: string): Observable<void> {
-        return this.http.delete<void>(`${this.apiUrl}/time-off/${id}`);
+        return this.http.delete<void>(`${this.apiUrl}/${id}`);
     }
 }

@@ -7,12 +7,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MeetingManager.WebApi.Controllers
 {
-    public class UserController : DefaultControllerBase
+    public class UsersController : DefaultControllerBase
     {
         private readonly IUserGetterService _userGetterService;
         private readonly IUserUpdaterService _userUpdaterService;
 
-        public UserController(IUserGetterService userGetterService, IUserUpdaterService userUpdaterService)
+        public UsersController(IUserGetterService userGetterService, IUserUpdaterService userUpdaterService)
         {
             _userGetterService = userGetterService;
             _userUpdaterService = userUpdaterService;
