@@ -6,5 +6,6 @@ namespace MeetingManager.Domain.RepositoryContracts
     {
         Task<List<Meeting>> GetCurrentParticipantMeetingsAsync(Guid userId, CancellationToken ct = default);
         Task<Meeting?> FindMeetingForUpdateAsync(Guid meetingId, CancellationToken ct = default);
+        Task<Meeting?> FindMeetingAsync(Guid meetingId, CancellationToken ct = default);
     }
 }

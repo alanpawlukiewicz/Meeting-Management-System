@@ -11,6 +11,14 @@ namespace MeetingManager.Infrastructure.Repositories
         {
         }
 
+        public async Task<Meeting?> FindMeetingAsync(Guid meetingId, CancellationToken ct = default)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(m => m.Id == meetingId)
+                .FirstOrDefaultAsync(ct);
+        }
+
         public async Task<Meeting?> FindMeetingForUpdateAsync(Guid meetingId, CancellationToken ct = default)
         {
             return await DbSet

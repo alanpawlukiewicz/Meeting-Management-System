@@ -14,14 +14,16 @@ namespace MeetingManager.WebApi.Controllers
         private readonly IMeetingAttendanceUpdaterService _meetingAttendanceUpdaterService;
         private readonly IMeetingAdderService _meetingAdderService;
         private readonly IMeetingUpdaterService _meetingUpdaterService;
+        private readonly IMeetingDeleterService _meetingDeleterService;
 
-        public MeetingsController(IMeetingGetterService meetingGetterService, ICurrentUserService currentUserService, IMeetingAttendanceUpdaterService meetingAttendanceUpdaterService, IMeetingAdderService meetingAdderService, IMeetingUpdaterService meetingUpdaterService)
+        public MeetingsController(IMeetingGetterService meetingGetterService, ICurrentUserService currentUserService, IMeetingAttendanceUpdaterService meetingAttendanceUpdaterService, IMeetingAdderService meetingAdderService, IMeetingUpdaterService meetingUpdaterService, IMeetingDeleterService meetingDeleterService)
         {
             _meetingGetterService = meetingGetterService;
             _currentUserService = currentUserService;
             _meetingAttendanceUpdaterService = meetingAttendanceUpdaterService;
             _meetingAdderService = meetingAdderService;
             _meetingUpdaterService = meetingUpdaterService;
+            _meetingDeleterService = meetingDeleterService;
         }
 
         [HttpGet("me")]
@@ -44,5 +46,13 @@ namespace MeetingManager.WebApi.Controllers
         [HttpPut("{meetingId:guid}")]
         public async Task<ActionResult<MeetingResponse>> UpdateMeeting(Guid meetingId, MeetingRequest request, CancellationToken ct)
             => await _meetingUpdaterService.UpdateMeetingAsync(meetingId, _currentUserService.UserId, request, ct);
+
+        [HasRole(RoleName.Organizer)]
+        [HttpDelete("{meetingId:guid}")]
+        public async Task<IActionResult> DeleteMeeting(Guid meetingId, CancellationToken ct)
+        {
+            await _meetingDeleterService.DeleteMeetingAsync(_currentUserService.UserId, meetingId, ct);
+            return NoContent();
+        }
     }
 }
