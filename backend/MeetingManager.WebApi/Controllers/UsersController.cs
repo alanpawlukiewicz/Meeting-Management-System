@@ -22,6 +22,7 @@ namespace MeetingManager.WebApi.Controllers
         public async Task<ActionResult<List<UserStatusCheckResponse>>> CheckUserAvailabilities(UserStatusCheckRequest request, CancellationToken ct)
             => await _userGetterService.CheckUserAvailabilitiesAsync(request, ct);
 
+        [HasRole(RoleName.Organizer)]
         [HttpGet("lookup")]
         public async Task<ActionResult<List<LookupDto>>> GetUsersForLookup(
             [FromQuery] string q,

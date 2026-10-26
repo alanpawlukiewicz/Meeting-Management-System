@@ -22,7 +22,7 @@ namespace MeetingManager.Core.Services.MeetingServices
         }
 
         public async Task<MeetingResponse> UpdateMeetingAsync(
-                Guid meetingId, Guid creatorId, MeetingRequest request, CancellationToken ct = default)
+    Guid meetingId, Guid creatorId, MeetingRequest request, CancellationToken ct = default)
         {
             if (request.EndTime < request.StartTime)
                 throw new ValidationException("End time must be later than start time.");
@@ -47,44 +47,47 @@ namespace MeetingManager.Core.Services.MeetingServices
             meeting.EndTime = request.EndTime;
             meeting.Place = request.Place;
 
+            HashSet<Guid> targetIds;
             if (request.ParticipantIds != null)
             {
-                var requestedIds = request.ParticipantIds.ToHashSet();
-
-                var toRemove = meeting.MeetingParticipants
-                    .Where(mp => !requestedIds.Contains(mp.UserId))
-                    .ToList();
-
-                foreach (var mp in toRemove)
-                {
-                    _meetingParticipantRepository.Remove(mp);
-                }
-
-                var existingIds = meeting.MeetingParticipants.Select(mp => mp.UserId).ToHashSet();
-                foreach (var id in requestedIds.Except(existingIds))
-                {
-                    meeting.MeetingParticipants.Add(DefaultMeetingParticipant(id));
-                }
-
-
-                if (!request.ParticipantIds.Contains(creatorId))
-                    meeting.MeetingParticipants.Add(new MeetingParticipant
-                    {
-                        Id = Guid.NewGuid(),
-                        RespondedAt = DateTimeOffset.UtcNow,
-                        Status = AttendanceStatus.Accepted,
-                        UserId = creatorId
-                    });
+                targetIds = request.ParticipantIds.ToHashSet();
             }
             else
             {
-                List<Guid> allUserIds = await _userRepository.GetAllUserIdsAsync(ct);
-                meeting.MeetingParticipants = allUserIds.Select(DefaultMeetingParticipant).ToList();
+                targetIds = (await _userRepository.GetAllUserIdsAsync(ct)).ToHashSet();
+            }
+            targetIds.Add(creatorId);
+
+            var toRemove = meeting.MeetingParticipants
+                .Where(mp => !targetIds.Contains(mp.UserId))
+                .ToList();
+
+            foreach (var mp in toRemove)
+                _meetingParticipantRepository.Remove(mp);
+
+            var existingIds = meeting.MeetingParticipants.Select(mp => mp.UserId).ToHashSet();
+            foreach (var id in targetIds.Except(existingIds))
+            {
+                var participant = id == creatorId
+                    ? new MeetingParticipant
+                    {
+                        Id = Guid.NewGuid(),
+                        MeetingId = meeting.Id,
+                        UserId = creatorId,
+                        Status = AttendanceStatus.Accepted,
+                        RespondedAt = DateTimeOffset.UtcNow
+                    }
+                    : DefaultMeetingParticipant(id);
+
+                participant.MeetingId = meeting.Id;
+                _meetingParticipantRepository.Add(participant);
             }
 
             if (scheduleChanged)
             {
-                foreach (var mp in meeting.MeetingParticipants.Where(mp => mp.Status != AttendanceStatus.Pending))
+                foreach (var mp in meeting.MeetingParticipants
+                             .Where(mp => mp.Status != AttendanceStatus.Pending
+                                          && mp.UserId != creatorId))
                 {
                     mp.Status = AttendanceStatus.Pending;
                     mp.RespondedAt = null;

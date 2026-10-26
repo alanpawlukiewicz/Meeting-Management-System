@@ -34,7 +34,9 @@ namespace MeetingManager.Infrastructure.Repositories
                     .Where(m => m.MeetingParticipants.Any(mp => mp.UserId == userId)
                     && m.Date >= DateOnly.FromDateTime(DateTime.UtcNow))
                     .Include(m => m.User)
-                    .Include(m => m.MeetingParticipants.Where(mp => mp.UserId == userId))
+                    .Include(m => m.MeetingParticipants)
+                        .ThenInclude(mp => mp.User)
+                    .AsSplitQuery()
                     .ToListAsync(ct);
         }
     }

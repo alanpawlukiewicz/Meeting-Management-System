@@ -21,6 +21,7 @@ namespace MeetingManager.Core.Mappers
         {
             return new UserProfile
             {
+                Id = user.Id,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Roles = user.UserRoles.Select(ur => ur.Role!.Name).ToList(),

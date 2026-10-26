@@ -10,12 +10,14 @@ namespace MeetingManager.Core.Mappers
             return new MeetingDto
             {
                 Id = meeting.Id,
+                CreatorId = meeting.CreatorId,
                 CreatorName = meeting.User?.UserName ?? string.Empty,
                 Date = meeting.Date,
                 EndTime = meeting.EndTime,
                 StartTime = meeting.StartTime,
                 Place = meeting.Place,
-                Status = meeting.MeetingParticipants.FirstOrDefault(mp => mp.UserId == userId)!.Status.ToString()
+                Status = meeting.MeetingParticipants.FirstOrDefault(mp => mp.UserId == userId)!.Status.ToString(),
+                Participants = meeting.MeetingParticipants.Select(mp => mp.User!.ToUserResponse()).ToList()
             };
         }
 
