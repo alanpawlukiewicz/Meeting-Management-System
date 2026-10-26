@@ -16,7 +16,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   Observable,
   catchError,
@@ -29,15 +29,20 @@ import {
   switchMap,
 } from 'rxjs';
 import { LookupDto } from '../../../core/models/lookup.model';
-import { UserStatusCheckRequest, UserStatusCheckResponse } from '../../../core/models/user.models';
+import {
+  UserResponse,
+  UserStatusCheckRequest,
+  UserStatusCheckResponse,
+} from '../../../core/models/user.models';
 import { MeetingRequest } from '../../../core/models/meeting.models';
 import { MeetingApiService } from '../../../core/services/api-services/meeting-api.service';
 import { UserApiService } from '../../../core/services/api-services/user-api.service';
+import { UserService } from '../../../core/services/user.service'; // popraw ścieżkę
 import { minDateValidator } from '../../../core/validators/min-date.validator';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MAT_DATE_LOCALE, provideNativeDateAdapter } from '@angular/material/core';
 
-/** Where to go after the meeting is created (or when the user cancels). Adjust to your routes. */
+/** Where to go after the meeting is saved (or when the user cancels). Adjust to your routes. */
 const AFTER_SAVE_ROUTE = ['/'];
 
 const SEARCH_DEBOUNCE_MS = 250;
@@ -70,6 +75,21 @@ const pad = (n: number): string => String(n).padStart(2, '0');
 /** Date -> "2026-10-22" (local time, so DateOnly never shifts because of time zones) */
 const toDateKey = (d: Date): string => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 
+/** "2026-10-22" -> Date (local time) */
+const parseDate = (value: string): Date => {
+  const [y, m, d] = value.slice(0, 10).split('-').map(Number);
+  return new Date(y, m - 1, d);
+};
+
+/** "08:30:00" -> "08:30" (value for <input type="time">) */
+const toHm = (time: string): string => time.slice(0, 5);
+
+/** UserResponse -> LookupDto used by the participants list (assumes LookupDto = { id, name }) */
+const toLookup = (u: UserResponse): LookupDto => ({
+  id: u.id,
+  name: [u.firstName, u.lastName].filter(Boolean).join(' ') || u.userName,
+});
+
 // --- validators ---
 
 function rangeValidator(group: AbstractControl): ValidationErrors | null {
@@ -89,18 +109,27 @@ function rangeValidator(group: AbstractControl): ValidationErrors | null {
     MatProgressSpinnerModule,
     MatDatepickerModule
   ],
-  selector: 'app-add-meeting-page',
-  styleUrl: './add-meeting-page.css',
-  templateUrl: './add-meeting-page.html',
+  selector: 'app-meeting-form-page',
+  styleUrl: './meeting-form-page.css',
+  templateUrl: './meeting-form-page.html',
   providers: [provideNativeDateAdapter(),
-    { provide: MAT_DATE_LOCALE, useValue: 'pl-PL' }
+  { provide: MAT_DATE_LOCALE, useValue: 'pl-PL' }
   ],
 })
-export class AddMeetingPage {
+export class MeetingFormPage {
   private readonly meetingApi = inject(MeetingApiService);
   private readonly userApi = inject(UserApiService);
+  private readonly userService = inject(UserService);
   private readonly snackBar = inject(MatSnackBar);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+
+  /** Id in the route => edit mode, no id => create mode. */
+  readonly meetingId = this.route.snapshot.paramMap.get('id');
+  readonly isEdit = this.meetingId !== null;
+
+  readonly loading = signal(this.isEdit);
+  readonly loadError = signal(false);
 
   readonly todayKey = toDateKey(new Date());
   readonly today = new Date();
@@ -218,6 +247,12 @@ export class AddMeetingPage {
     };
   });
 
+  constructor() {
+    if (this.meetingId) {
+      this.loadMeeting(this.meetingId);
+    }
+  }
+
   // --- actions ---
   addParticipant(user: LookupDto): void {
     this.participants.update((list) => (list.some((p) => p.id === user.id) ? list : [...list, user]));
@@ -251,22 +286,69 @@ export class AddMeetingPage {
     };
 
     this.saving.set(true);
-    this.meetingApi.addMeeting(request).subscribe({
+
+    const save$ = this.meetingId
+      ? this.meetingApi.updateMeeting(this.meetingId, request)
+      : this.meetingApi.addMeeting(request);
+
+    save$.subscribe({
       next: () => {
         this.saving.set(false);
-        this.snackBar.open('Meeting created', undefined, { duration: 3000 });
+        this.snackBar.open(this.isEdit ? 'Meeting updated' : 'Meeting created', undefined, {
+          duration: 3000,
+        });
         this.router.navigate(AFTER_SAVE_ROUTE);
       },
       error: () => {
         this.saving.set(false);
-        this.snackBar.open('Could not create the meeting. Please try again.', 'Close', {
-          duration: 5000,
-        });
+        this.snackBar.open(
+          this.isEdit
+            ? 'Could not update the meeting. Please try again.'
+            : 'Could not create the meeting. Please try again.',
+          'Close',
+          { duration: 5000 },
+        );
       },
     });
   }
 
   // --- helpers ---
+
+  /** Edit mode: finds the meeting in the user's meetings and fills the form. */
+  private loadMeeting(id: string): void {
+    this.meetingApi.GetUserMeetings().subscribe({
+      next: (meetings) => {
+        const m = meetings.find((x) => x.id === id);
+
+        if (!m) {
+          this.loadError.set(true);
+          this.loading.set(false);
+          return;
+        }
+
+        if (this.userService.currentUser()?.id !== m.creatorId) {
+          this.snackBar.open('Only the organizer can edit this meeting.', 'Close', { duration: 5000 });
+          this.router.navigate(AFTER_SAVE_ROUTE);
+          return;
+        }
+
+        this.form.patchValue({
+          place: m.place,
+          date: parseDate(m.date),
+          start: toHm(m.startTime),
+          end: toHm(m.endTime),
+          mode: 'selected',
+        });
+        this.participants.set(m.participants.filter((p) => p.id !== m.creatorId).map(toLookup));
+        this.loading.set(false);
+      },
+      error: () => {
+        this.loadError.set(true);
+        this.loading.set(false);
+      },
+    });
+  }
+
   private search(query: string): Observable<SearchState> {
     if (query.length === 0) {
       return of({ query, loading: false, failed: false, results: [] });

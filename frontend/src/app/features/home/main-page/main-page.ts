@@ -5,8 +5,10 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 import { AttendanceStatus, MeetingDto } from '../../../core/models/meeting.models';
 import { MeetingApiService } from '../../../core/services/api-services/meeting-api.service';
+import { UserService } from '../../../core/services/user.service';
 
 interface MeetingView {
   id: string;
@@ -20,6 +22,8 @@ interface MeetingView {
   endLabel: string;
   isOngoing: boolean;
   isUpdating: boolean;
+  isOwner: boolean;
+  isConfirmingDelete: boolean;
 }
 
 interface MeetingGroup {
@@ -74,7 +78,9 @@ const dayLabel = (date: Date, now: Date): string => {
 })
 export class MainPage implements OnInit {
   private readonly meetingApi = inject(MeetingApiService);
+  private readonly userService = inject(UserService);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
 
   /** Exposed so the template can compare against enum members. */
@@ -83,8 +89,12 @@ export class MainPage implements OnInit {
   // --- state ---
   private readonly meetings = signal<MeetingDto[]>([]);
   private readonly updatingIds = signal<ReadonlySet<string>>(new Set());
+  /** Id of the meeting whose deletion the user is currently confirming. */
+  private readonly confirmingDeleteId = signal<string | null>(null);
   /** Ticks every minute so "happening now" and "ended" update without a reload. */
   private readonly now = signal(new Date());
+
+  private readonly currentUserId = computed(() => this.userService.currentUser()?.id ?? null);
 
   readonly loading = signal(true);
   readonly loadError = signal(false);
@@ -94,6 +104,8 @@ export class MainPage implements OnInit {
   private readonly items = computed<MeetingView[]>(() => {
     const now = this.now();
     const updating = this.updatingIds();
+    const userId = this.currentUserId();
+    const confirmingId = this.confirmingDeleteId();
 
     return this.meetings()
       .map((dto): MeetingView => {
@@ -118,6 +130,8 @@ export class MainPage implements OnInit {
           endLabel: toHm(dto.endTime),
           isOngoing: start <= now && now < end,
           isUpdating: updating.has(dto.id),
+          isOwner: userId !== null && dto.creatorId === userId,
+          isConfirmingDelete: confirmingId === dto.id,
         };
       })
       .filter((m) => m.end > now)
@@ -189,6 +203,40 @@ export class MainPage implements OnInit {
         this.applyStatus(meetingId, previous);
         this.finishUpdate(meetingId);
         this.snackBar.open('Could not update your response. Please try again.', 'Close', {
+          duration: 5000,
+        });
+      },
+    });
+  }
+
+  // --- edit / delete (organizer only; the backend must enforce this too) ---
+
+  editMeeting(meetingId: string): void {
+    this.router.navigate(['/meetings', meetingId, 'edit']);
+  }
+
+  askDelete(meetingId: string): void {
+    this.confirmingDeleteId.set(meetingId);
+  }
+
+  cancelDelete(): void {
+    this.confirmingDeleteId.set(null);
+  }
+
+  /** Not optimistic: the meeting is removed from the list only after the server confirms. */
+  deleteMeeting(meetingId: string): void {
+    this.confirmingDeleteId.set(null);
+    this.updatingIds.update((ids) => new Set(ids).add(meetingId));
+
+    this.meetingApi.deleteMeeting(meetingId).subscribe({
+      next: () => {
+        this.meetings.update((list) => list.filter((m) => m.id !== meetingId));
+        this.finishUpdate(meetingId);
+        this.snackBar.open('Meeting deleted', undefined, { duration: 3000 });
+      },
+      error: () => {
+        this.finishUpdate(meetingId);
+        this.snackBar.open('Could not delete the meeting. Please try again.', 'Close', {
           duration: 5000,
         });
       },

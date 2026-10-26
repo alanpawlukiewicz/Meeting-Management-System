@@ -4,6 +4,7 @@ export interface LoginRequest {
 }
 
 export interface UserProfile {
+    id: string;
     userName: string;
     firstName: string | null;
     lastName: string | null;

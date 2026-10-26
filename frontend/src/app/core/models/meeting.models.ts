@@ -1,11 +1,15 @@
+import { UserResponse } from "./user.models";
+
 export interface MeetingDto {
     id: string;
+    creatorId: string;
     creatorName: string;
     date: string;
     startTime: string;
     endTime: string;
     place: string;
     status: AttendanceStatus;
+    participants: UserResponse[];
 }
 
 export enum AttendanceStatus {

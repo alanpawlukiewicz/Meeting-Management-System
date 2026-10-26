@@ -37,6 +37,27 @@
         <mat-button-toggle [value]="AttendanceStatus.Declined">Decline</mat-button-toggle>
       </mat-button-toggle-group>
       }
+
+      @if (m.isOwner) {
+      <div class="flex items-center gap-1">
+        @if (m.isConfirmingDelete) {
+        <span class="text-sm text-slate-700">Delete this meeting?</span>
+        <button mat-button type="button" (click)="cancelDelete()">Cancel</button>
+        <button mat-flat-button type="button" class="bg-red-700! text-white!" (click)="deleteMeeting(m.id)">
+          Delete
+        </button>
+        } @else {
+        <button mat-icon-button type="button" [disabled]="m.isUpdating" (click)="editMeeting(m.id)"
+          aria-label="Edit meeting">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button type="button" [disabled]="m.isUpdating" (click)="askDelete(m.id)"
+          aria-label="Delete meeting">
+          <mat-icon>delete</mat-icon>
+        </button>
+        }
+      </div>
+      }
     </div>
 
   </article>

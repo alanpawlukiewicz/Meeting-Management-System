@@ -1,5 +1,5 @@
 <mat-toolbar>
-    <span class="color-red-500!">Meeting Manager</span>
+    <a routerLink="/">Meeting Manager</a>
     <span class="grow!"></span>
     @if (userService.isLoggedIn())
     {
@@ -13,7 +13,7 @@
     }
     @if (userService.isOrganizer())
     {
-    <a matIconButton matTooltip="Add new meeting" routerLink="/meeting/add">
+    <a matIconButton matTooltip="Add new meeting" routerLink="/meetings/add">
         <mat-icon>calendar_add_on</mat-icon>
     </a>
     }

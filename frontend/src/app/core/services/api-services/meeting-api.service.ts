@@ -24,4 +24,8 @@ export class MeetingApiService {
     updateMeeting(meetingId: string, request: MeetingRequest): Observable<MeetingResponse> {
         return this.http.put<MeetingResponse>(`${this.apiUrl}/${meetingId}`, request);
     }
+
+    deleteMeeting(meetingId: string): Observable<void> {
+        return this.http.delete<void>(`${this.apiUrl}/${meetingId}`);
+    }
 }

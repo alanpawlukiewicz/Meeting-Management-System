@@ -39,6 +39,7 @@ export class UserService {
 
     setUser(user: UserResponse): void {
         this.currentUserSignal.set({
+            id: user.id,
             firstName: user.firstName,
             lastName: user.lastName,
             roles: this.currentUserSignal()?.roles ?? [],
