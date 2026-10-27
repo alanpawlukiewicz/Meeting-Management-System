@@ -7,7 +7,7 @@ import { authGuard } from './core/guards/auth.guard';
 import { guestGuard } from './core/guards/guest.guard';
 import { AvailabilityPage } from './features/availability/availability-page/availability-page';
 import { Role } from './core/models/auth.models';
-import { MeetingFormPage } from './features/meeting/add-meeting-page/meeting-form-page';
+import { MeetingFormPage } from './features/meeting/meeting-form-page/meeting-form-page';
 import { UserPage } from './features/users/user-page/user-page';
 import { SettingsPage } from './features/users/settings-page/settings-page';
 

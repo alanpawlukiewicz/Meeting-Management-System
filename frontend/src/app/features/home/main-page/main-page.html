@@ -17,6 +17,18 @@
         <mat-icon class="meta-icon text-slate-500" aria-hidden="true">person</mat-icon>
         <span class="truncate">Organized by {{ m.creatorName }}</span>
       </p>
+
+      @if (m.participants?.length) {
+      <p class="flex items-start gap-2 text-sm text-slate-600">
+        <mat-icon class="meta-icon shrink-0 text-slate-500" aria-hidden="true">group</mat-icon>
+        <span class="min-w-0">
+          <span class="sr-only">Invited:</span>
+          @for (p of m.participants; track p.id) {
+          <span>{{ p.userName }}</span>@if (!$last) {<span>, </span>}
+          }
+        </span>
+      </p>
+      }
     </div>
 
     <div class="flex flex-col items-start gap-2 sm:items-end">

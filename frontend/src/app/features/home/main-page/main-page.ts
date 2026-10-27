@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { AttendanceStatus, MeetingDto } from '../../../core/models/meeting.models';
 import { MeetingApiService } from '../../../core/services/api-services/meeting-api.service';
 import { UserService } from '../../../core/services/user.service';
+import { UserResponse } from '../../../core/models/user.models';
 
 interface MeetingView {
   id: string;
@@ -24,6 +25,7 @@ interface MeetingView {
   isUpdating: boolean;
   isOwner: boolean;
   isConfirmingDelete: boolean;
+  participants: UserResponse[];
 }
 
 interface MeetingGroup {
@@ -132,6 +134,7 @@ export class MainPage implements OnInit {
           isUpdating: updating.has(dto.id),
           isOwner: userId !== null && dto.creatorId === userId,
           isConfirmingDelete: confirmingId === dto.id,
+          participants: dto.participants
         };
       })
       .filter((m) => m.end > now)
