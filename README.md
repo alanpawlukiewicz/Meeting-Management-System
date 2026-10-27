@@ -196,6 +196,20 @@ The tables will be created automatically by the migrations when the backend star
 | `port is already allocated` (Docker)            | Port 80 is in use, change the port mapping in `docker-compose.yml`.                                   |
 | Changing the database password has no effect (Docker) | Postgres sets the password only on first initialization. Use `docker compose down -v` (deletes data). |
 
+---
+
+## Test Account
+
+To try out the application, you can sign in with the default administrator account:
+
+| Login   | Password            |
+| ------- | ------------------- |
+| `Admin` | `MeetingManager2026` |
+
+> These credentials are intended for testing and demo purposes only. Change the password (or remove the account) before using the application in any real environment.
+
+---
+
 ## Use of AI
 
 I used Claude throughout the project, to a very different extent depending on the part:
