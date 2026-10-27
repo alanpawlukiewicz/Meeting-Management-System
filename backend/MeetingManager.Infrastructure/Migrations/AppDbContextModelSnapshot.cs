@@ -287,6 +287,9 @@ namespace MeetingManager.Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("pk_user_time_offs");
 
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_user_time_offs_user_id");
+
                     b.ToTable("user_time_offs", (string)null);
                 });
 
@@ -338,7 +341,7 @@ namespace MeetingManager.Infrastructure.Migrations
             modelBuilder.Entity("MeetingManager.Domain.Entities.UserAvailability", b =>
                 {
                     b.HasOne("MeetingManager.Domain.Entities.User", "User")
-                        .WithMany()
+                        .WithMany("UserAvailabilities")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -368,6 +371,16 @@ namespace MeetingManager.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("MeetingManager.Domain.Entities.UserTimeOff", b =>
+                {
+                    b.HasOne("MeetingManager.Domain.Entities.User", null)
+                        .WithMany("UserTimeOffs")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_time_offs_users_user_id");
+                });
+
             modelBuilder.Entity("MeetingManager.Domain.Entities.Meeting", b =>
                 {
                     b.Navigation("MeetingParticipants");
@@ -380,7 +393,11 @@ namespace MeetingManager.Infrastructure.Migrations
 
             modelBuilder.Entity("MeetingManager.Domain.Entities.User", b =>
                 {
+                    b.Navigation("UserAvailabilities");
+
                     b.Navigation("UserRoles");
+
+                    b.Navigation("UserTimeOffs");
                 });
 #pragma warning restore 612, 618
         }
