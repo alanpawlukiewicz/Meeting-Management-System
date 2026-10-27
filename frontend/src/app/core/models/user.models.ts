@@ -16,8 +16,8 @@ export interface UserStatusCheckResponse {
 export interface UserDto {
     id: string;
     userName: string;
-    firstName: string;
-    lastName: string;
+    firstName: string | null;
+    lastName: string | null;
     roleNames: Role[];
 }
 

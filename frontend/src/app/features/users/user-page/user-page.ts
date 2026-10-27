@@ -16,7 +16,7 @@ type UserFilter = 'all' | 'organizers' | 'others';
 const isOrganizerRole = (role: Role): boolean => role === Role.Organizer;
 
 const initialsOf = (user: UserDto): string => {
-  const letters = `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.trim();
+  const letters = `${user.firstName?.charAt(0) ?? ''}${user.lastName?.charAt(0) ?? ''}`.trim();
   return (letters || user.userName.charAt(0)).toUpperCase();
 };
 
@@ -56,7 +56,7 @@ export class UserPage implements OnInit {
     return this.users()
       .map((user) => ({
         id: user.id,
-        fullName: `${user.firstName} ${user.lastName}`.trim(),
+        fullName: `${user.firstName ?? ''} ${user.lastName ?? ''}`.trim(),
         userName: user.userName,
         initials: initialsOf(user),
         isOrganizer: overrides.get(user.id) ?? user.roleNames.some(isOrganizerRole),
