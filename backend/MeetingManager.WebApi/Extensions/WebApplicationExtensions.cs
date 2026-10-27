@@ -1,5 +1,7 @@
 ﻿using MeetingManager.Infrastructure.Configuration;
+using MeetingManager.Infrastructure.DatabaseContext;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.EntityFrameworkCore;
 
 namespace MeetingManager.WebApi.Extensions
 {
@@ -7,6 +9,12 @@ namespace MeetingManager.WebApi.Extensions
     {
         public static WebApplication UseApiPipeline(this WebApplication app)
         {
+            using (var scope = app.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                db.Database.Migrate();
+            }
+
             var corsOptions = app.Configuration.GetSection(CorsOptions.SectionName).Get<CorsOptions>()!;
 
             app.UseForwardedHeaders(new ForwardedHeadersOptions
