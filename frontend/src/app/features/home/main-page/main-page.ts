@@ -1,4 +1,3 @@
-import { NgTemplateOutlet } from '@angular/common';
 import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -10,8 +9,9 @@ import { AttendanceStatus, MeetingDto } from '../../../core/models/meeting.model
 import { MeetingApiService } from '../../../core/services/api-services/meeting-api.service';
 import { UserService } from '../../../core/services/user.service';
 import { UserResponse } from '../../../core/models/user.models';
+import { MeetingCard } from '../../shared/meeting-card/meeting-card';
 
-interface MeetingView {
+export interface MeetingView {
   id: string;
   creatorName: string;
   title: string;
@@ -25,7 +25,6 @@ interface MeetingView {
   isOngoing: boolean;
   isUpdating: boolean;
   isOwner: boolean;
-  isConfirmingDelete: boolean;
   participants: UserResponse[];
 }
 
@@ -69,11 +68,11 @@ const dayLabel = (date: Date, now: Date): string => {
 
 @Component({
   imports: [
-    NgTemplateOutlet,
     MatButtonModule,
     MatButtonToggleModule,
     MatIconModule,
     MatProgressSpinnerModule,
+    MeetingCard
   ],
   selector: 'app-main-page',
   styleUrl: './main-page.css',
@@ -92,8 +91,6 @@ export class MainPage implements OnInit {
   // --- state ---
   private readonly meetings = signal<MeetingDto[]>([]);
   private readonly updatingIds = signal<ReadonlySet<string>>(new Set());
-  /** Id of the meeting whose deletion the user is currently confirming. */
-  private readonly confirmingDeleteId = signal<string | null>(null);
   /** Ticks every minute so "happening now" and "ended" update without a reload. */
   private readonly now = signal(new Date());
 
@@ -108,7 +105,6 @@ export class MainPage implements OnInit {
     const now = this.now();
     const updating = this.updatingIds();
     const userId = this.currentUserId();
-    const confirmingId = this.confirmingDeleteId();
 
     return this.meetings()
       .map((dto): MeetingView => {
@@ -135,7 +131,6 @@ export class MainPage implements OnInit {
           isOngoing: start <= now && now < end,
           isUpdating: updating.has(dto.id),
           isOwner: userId !== null && dto.creatorId === userId,
-          isConfirmingDelete: confirmingId === dto.id,
           participants: dto.participants
         };
       })
@@ -192,24 +187,14 @@ export class MainPage implements OnInit {
     });
   }
 
-  /** Optimistic update: the UI changes immediately and is rolled back if the request fails. */
-  changeStatus(meetingId: string, status: AttendanceStatus): void {
-    const previous = this.meetings().find((m) => m.id === meetingId)?.status;
-    if (previous === undefined || previous === status) {
-      return;
-    }
+  changeStatus(id: string, status: AttendanceStatus): void {
+    const previous = this.meetings().find(m => m.id === id)?.status;
+    this.meetings.update(l => l.map(m => m.id === id ? { ...m, status } : m));
 
-    this.applyStatus(meetingId, status);
-    this.updatingIds.update((ids) => new Set(ids).add(meetingId));
-
-    this.meetingApi.changeAttendanceStatus(meetingId, status).subscribe({
-      next: () => this.finishUpdate(meetingId),
+    this.meetingApi.changeAttendanceStatus(id, status).subscribe({
       error: () => {
-        this.applyStatus(meetingId, previous);
-        this.finishUpdate(meetingId);
-        this.snackBar.open('Could not update your response. Please try again.', 'Close', {
-          duration: 5000,
-        });
+        this.meetings.update(l => l.map(m => m.id === id ? { ...m, status: previous! } : m));
+        this.snackBar.open('Could not update your response. Please try again.', 'Close', { duration: 5000 });
       },
     });
   }
@@ -220,17 +205,8 @@ export class MainPage implements OnInit {
     this.router.navigate(['/meetings', meetingId, 'edit']);
   }
 
-  askDelete(meetingId: string): void {
-    this.confirmingDeleteId.set(meetingId);
-  }
-
-  cancelDelete(): void {
-    this.confirmingDeleteId.set(null);
-  }
-
   /** Not optimistic: the meeting is removed from the list only after the server confirms. */
   deleteMeeting(meetingId: string): void {
-    this.confirmingDeleteId.set(null);
     this.updatingIds.update((ids) => new Set(ids).add(meetingId));
 
     this.meetingApi.deleteMeeting(meetingId).subscribe({
@@ -246,10 +222,6 @@ export class MainPage implements OnInit {
         });
       },
     });
-  }
-
-  private applyStatus(meetingId: string, status: AttendanceStatus): void {
-    this.meetings.update((list) => list.map((m) => (m.id === meetingId ? { ...m, status } : m)));
   }
 
   private finishUpdate(meetingId: string): void {

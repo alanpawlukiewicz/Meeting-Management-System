@@ -1,0 +1,77 @@
+<article class="flex flex-col gap-4 rounded-xl border bg-white p-4 sm:flex-row sm:items-center"
+    [class.border-emerald-300]="meeting().isOngoing" [class.border-slate-200]="!meeting().isOngoing"
+    [class.opacity-70]="meeting().status === AttendanceStatus.Declined">
+    <div class="w-24 shrink-0">
+      <p class="text-xl font-semibold text-slate-900">{{ meeting().startLabel }}</p>
+      <p class="text-sm text-slate-500">until {{ meeting().endLabel }}</p>
+    </div>
+
+    <div class="min-w-0 flex-1 space-y-1">
+      <h3 class="truncate text-base font-semibold text-slate-900" [attr.title]="meeting().title">
+        {{ meeting().title }}
+      </h3>
+
+      <p class="flex items-center gap-2 text-sm font-medium text-slate-900">
+        <mat-icon class="meta-icon text-slate-500" aria-hidden="true">place</mat-icon>
+        <span class="truncate">{{ meeting().place }}</span>
+      </p>
+      <p class="flex items-center gap-2 text-sm text-slate-600">
+        <mat-icon class="meta-icon text-slate-500" aria-hidden="true">person</mat-icon>
+        <span class="truncate">Organized by {{ meeting().creatorName }}</span>
+      </p>
+
+      @if (meeting().participants?.length) {
+      <p class="flex items-start gap-2 text-sm text-slate-600">
+        <mat-icon class="meta-icon shrink-0 text-slate-500" aria-hidden="true">group</mat-icon>
+        <span class="min-w-0">
+          <span class="sr-only">Invited:</span>
+          @for (p of meeting().participants; track p.id) {
+          <span>{{ p.userName }}</span>@if (!$last) {<span>, </span>}
+          }
+        </span>
+      </p>
+      }
+    </div>
+
+    <div class="flex flex-col items-start gap-2 sm:items-end">
+      <span class="rounded-full px-2.5 py-0.5 text-xs font-medium"
+        [class.bg-amber-100]="meeting().status === AttendanceStatus.Pending"
+        [class.text-amber-900]="meeting().status === AttendanceStatus.Pending"
+        [class.bg-emerald-100]="meeting().status === AttendanceStatus.Accepted"
+        [class.text-emerald-900]="meeting().status === AttendanceStatus.Accepted"
+        [class.bg-red-100]="meeting().status === AttendanceStatus.Declined"
+        [class.text-red-800]="meeting().status === AttendanceStatus.Declined">
+        {{ meeting().statusLabel }}
+      </span>
+      @if (!meeting().isOngoing)
+      {
+      <mat-button-toggle-group aria-label="Your response" [value]="meeting().status" [disabled]="meeting().isUpdating"
+        (change)="onStatusChange.emit($event.value)">
+        <mat-button-toggle [value]="AttendanceStatus.Accepted">Accept</mat-button-toggle>
+        <mat-button-toggle [value]="AttendanceStatus.Declined">Decline</mat-button-toggle>
+      </mat-button-toggle-group>
+      }
+
+      @if (meeting().isOwner) {
+      <div class="flex items-center gap-1">
+        @if (confirmDelete()) {
+        <span class="text-sm text-slate-700">Delete this meeting?</span>
+        <button mat-button type="button" (click)="cancelDelete()">Cancel</button>
+        <button mat-flat-button type="button" class="bg-red-700! text-white!" (click)="deleteMeeting()">
+          Delete
+        </button>
+        } @else {
+        <button mat-icon-button type="button" [disabled]="meeting().isUpdating" (click)="onUpdate.emit()"
+          aria-label="Edit meeting">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button type="button" [disabled]="meeting().isUpdating" (click)="askDelete()"
+          aria-label="Delete meeting">
+          <mat-icon>delete</mat-icon>
+        </button>
+        }
+      </div>
+      }
+    </div>
+
+  </article>

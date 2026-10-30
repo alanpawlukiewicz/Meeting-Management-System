@@ -1,84 +1,3 @@
-<!-- Shared card used by both "Happening now" and "Upcoming" -->
-<ng-template #meetingCard let-m>
-  <article class="flex flex-col gap-4 rounded-xl border bg-white p-4 sm:flex-row sm:items-center"
-    [class.border-emerald-300]="m.isOngoing" [class.border-slate-200]="!m.isOngoing"
-    [class.opacity-70]="m.status === AttendanceStatus.Declined">
-    <div class="w-24 shrink-0">
-      <p class="text-xl font-semibold text-slate-900">{{ m.startLabel }}</p>
-      <p class="text-sm text-slate-500">until {{ m.endLabel }}</p>
-    </div>
-
-    <div class="min-w-0 flex-1 space-y-1">
-      <h3 class="truncate text-base font-semibold text-slate-900" [attr.title]="m.title">
-        {{ m.title }}
-      </h3>
-
-      <p class="flex items-center gap-2 text-sm font-medium text-slate-900">
-        <mat-icon class="meta-icon text-slate-500" aria-hidden="true">place</mat-icon>
-        <span class="truncate">{{ m.place }}</span>
-      </p>
-      <p class="flex items-center gap-2 text-sm text-slate-600">
-        <mat-icon class="meta-icon text-slate-500" aria-hidden="true">person</mat-icon>
-        <span class="truncate">Organized by {{ m.creatorName }}</span>
-      </p>
-
-      @if (m.participants?.length) {
-      <p class="flex items-start gap-2 text-sm text-slate-600">
-        <mat-icon class="meta-icon shrink-0 text-slate-500" aria-hidden="true">group</mat-icon>
-        <span class="min-w-0">
-          <span class="sr-only">Invited:</span>
-          @for (p of m.participants; track p.id) {
-          <span>{{ p.userName }}</span>@if (!$last) {<span>, </span>}
-          }
-        </span>
-      </p>
-      }
-    </div>
-
-    <div class="flex flex-col items-start gap-2 sm:items-end">
-      <span class="rounded-full px-2.5 py-0.5 text-xs font-medium"
-        [class.bg-amber-100]="m.status === AttendanceStatus.Pending"
-        [class.text-amber-900]="m.status === AttendanceStatus.Pending"
-        [class.bg-emerald-100]="m.status === AttendanceStatus.Accepted"
-        [class.text-emerald-900]="m.status === AttendanceStatus.Accepted"
-        [class.bg-red-100]="m.status === AttendanceStatus.Declined"
-        [class.text-red-800]="m.status === AttendanceStatus.Declined">
-        {{ m.statusLabel }}
-      </span>
-      @if (!m.isOngoing)
-      {
-      <mat-button-toggle-group aria-label="Your response" [value]="m.status" [disabled]="m.isUpdating"
-        (change)="changeStatus(m.id, $event.value)">
-        <mat-button-toggle [value]="AttendanceStatus.Accepted">Accept</mat-button-toggle>
-        <mat-button-toggle [value]="AttendanceStatus.Declined">Decline</mat-button-toggle>
-      </mat-button-toggle-group>
-      }
-
-      @if (m.isOwner) {
-      <div class="flex items-center gap-1">
-        @if (m.isConfirmingDelete) {
-        <span class="text-sm text-slate-700">Delete this meeting?</span>
-        <button mat-button type="button" (click)="cancelDelete()">Cancel</button>
-        <button mat-flat-button type="button" class="bg-red-700! text-white!" (click)="deleteMeeting(m.id)">
-          Delete
-        </button>
-        } @else {
-        <button mat-icon-button type="button" [disabled]="m.isUpdating" (click)="editMeeting(m.id)"
-          aria-label="Edit meeting">
-          <mat-icon>edit</mat-icon>
-        </button>
-        <button mat-icon-button type="button" [disabled]="m.isUpdating" (click)="askDelete(m.id)"
-          aria-label="Delete meeting">
-          <mat-icon>delete</mat-icon>
-        </button>
-        }
-      </div>
-      }
-    </div>
-
-  </article>
-</ng-template>
-
 <div class="mx-auto max-w-3xl px-4 py-8">
   <header class="mb-6 flex flex-wrap items-start justify-between gap-4">
     <div>
@@ -123,7 +42,8 @@
     </h2>
     <div class="space-y-3">
       @for (m of ongoing(); track m.id) {
-      <ng-container [ngTemplateOutlet]="meetingCard" [ngTemplateOutletContext]="{ $implicit: m }" />
+      <app-meeting-card [meeting]="m" (onStatusChange)="changeStatus(m.id, $event)" (onDelete)="deleteMeeting(m.id)"
+        (onUpdate)="editMeeting(m.id)" />
       }
     </div>
   </section>
@@ -136,7 +56,8 @@
     </h2>
     <div class="space-y-3">
       @for (m of group.meetings; track m.id) {
-      <ng-container [ngTemplateOutlet]="meetingCard" [ngTemplateOutletContext]="{ $implicit: m }" />
+      <app-meeting-card [meeting]="m" (onStatusChange)="changeStatus(m.id, $event)" (onDelete)="deleteMeeting(m.id)"
+        (onUpdate)="editMeeting(m.id)" />
       }
     </div>
   </section>
