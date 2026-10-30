@@ -14,6 +14,7 @@ import { UserResponse } from '../../../core/models/user.models';
 interface MeetingView {
   id: string;
   creatorName: string;
+  title: string;
   place: string;
   status: AttendanceStatus;
   statusLabel: string;
@@ -122,6 +123,7 @@ export class MainPage implements OnInit {
 
         return {
           id: dto.id,
+          title: dto.title,
           creatorName: dto.creatorName,
           place: dto.place,
           status: dto.status,

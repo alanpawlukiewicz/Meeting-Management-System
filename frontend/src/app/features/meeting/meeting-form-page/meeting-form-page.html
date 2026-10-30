@@ -19,7 +19,19 @@
     <section class="rounded-xl border border-slate-200 bg-white p-5">
       <h2 class="mb-4 text-base font-semibold text-slate-900">Details</h2>
 
-      <div class="grid grid-rows-3 grid-cols-2 gap-2">
+      <div class="grid grid-rows-4 grid-cols-2 gap-2">
+        <mat-form-field appearance="outline" class="col-span-2">
+          <mat-label>Meeting Title</mat-label>
+          <input matInput formControlName="title" autocomplete="off" maxlength="200" />
+          <mat-hint align="end">{{ form.controls.title.value?.length || 0 }}/200</mat-hint>
+          @if (form.controls.title.hasError('required')) {
+          <mat-error>Required</mat-error>
+          }
+          @if (form.controls.title.hasError('maxlength')) {
+          <mat-error>Max length exceeded</mat-error>
+          }
+        </mat-form-field>
+
         <mat-form-field appearance="outline" class="col-span-2">
           <mat-label>Place</mat-label>
           <input matInput formControlName="place" autocomplete="off" />

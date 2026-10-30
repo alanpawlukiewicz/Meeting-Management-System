@@ -8,6 +8,7 @@ export interface MeetingDto {
     startTime: string;
     endTime: string;
     place: string;
+    title: string;
     status: AttendanceStatus;
     participants: UserResponse[];
 }
@@ -21,6 +22,7 @@ export interface MeetingRequest {
     startTime: string;
     endTime: string;
     place: string;
+    title: string;
     participantIds: string[] | null;
 }
 
@@ -30,4 +32,5 @@ export interface MeetingResponse {
     startTime: string;
     endTime: string;
     place: string;
+    title: string;
 }

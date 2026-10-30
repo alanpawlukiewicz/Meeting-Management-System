@@ -137,6 +137,7 @@ export class MeetingFormPage {
   // --- meeting form ---
   readonly form = new FormGroup(
     {
+      title: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.maxLength(200)] }),
       place: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
       date: new FormControl<Date>(this.today, {
         nonNullable: true,
@@ -275,12 +276,13 @@ export class MeetingFormPage {
       return;
     }
 
-    const { place, date, start, end, mode } = this.form.getRawValue();
+    const { title, place, date, start, end, mode } = this.form.getRawValue();
     const request: MeetingRequest = {
       date: toDateKey(date), // "YYYY-MM-DD" (DateOnly)
       startTime: `${start}:00`, // TimeOnly
       endTime: `${end}:00`,
       place: place.trim(),
+      title: title.trim(),
       participantIds:
         mode === 'everyone' ? null : this.participants().map((p) => p.id),
     };
@@ -334,6 +336,7 @@ export class MeetingFormPage {
 
         this.form.patchValue({
           place: m.place,
+          title: m.title,
           date: parseDate(m.date),
           start: toHm(m.startTime),
           end: toHm(m.endTime),

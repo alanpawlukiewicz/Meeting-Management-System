@@ -9,6 +9,10 @@
     </div>
 
     <div class="min-w-0 flex-1 space-y-1">
+      <h3 class="truncate text-base font-semibold text-slate-900" [attr.title]="m.title">
+        {{ m.title }}
+      </h3>
+
       <p class="flex items-center gap-2 text-sm font-medium text-slate-900">
         <mat-icon class="meta-icon text-slate-500" aria-hidden="true">place</mat-icon>
         <span class="truncate">{{ m.place }}</span>
