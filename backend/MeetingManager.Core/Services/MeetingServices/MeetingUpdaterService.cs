@@ -1,4 +1,4 @@
-﻿using MeetingManager.Core.DTO;
+﻿using MeetingManager.Core.DTO.MeetingDTOs;
 using MeetingManager.Core.Exceptions;
 using MeetingManager.Core.Mappers;
 using MeetingManager.Core.ServiceContracts.MeetingServiceContracts;
@@ -46,6 +46,7 @@ namespace MeetingManager.Core.Services.MeetingServices
             meeting.StartTime = request.StartTime;
             meeting.EndTime = request.EndTime;
             meeting.Place = request.Place;
+            meeting.Title = request.Title;
 
             HashSet<Guid> targetIds;
             if (request.ParticipantIds != null)

@@ -1,5 +1,5 @@
 ﻿using MeetingManager.Core.Constants;
-using MeetingManager.Core.DTO;
+using MeetingManager.Core.DTO.UserDTOs;
 using MeetingManager.Core.Exceptions;
 using MeetingManager.Core.Mappers;
 using MeetingManager.Core.ServiceContracts.UserServiceContracts;

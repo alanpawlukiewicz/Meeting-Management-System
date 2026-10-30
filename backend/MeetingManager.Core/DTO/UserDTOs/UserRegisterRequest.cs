@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MeetingManager.Core.DTO
+namespace MeetingManager.Core.DTO.UserDTOs
 {
     public class UserRegisterRequest
     {

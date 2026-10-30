@@ -1,4 +1,4 @@
-﻿using MeetingManager.Core.DTO;
+﻿using MeetingManager.Core.DTO.UserDTOs;
 using MeetingManager.Core.Mappers;
 using MeetingManager.Core.ServiceContracts.UserServiceContracts;
 using MeetingManager.Domain.RepositoryContracts;

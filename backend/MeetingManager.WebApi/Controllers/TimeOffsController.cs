@@ -1,4 +1,4 @@
-﻿using MeetingManager.Core.DTO;
+﻿using MeetingManager.Core.DTO.UserDTOs;
 using MeetingManager.Core.ServiceContracts;
 using MeetingManager.Core.ServiceContracts.UserServiceContracts;
 using Microsoft.AspNetCore.Mvc;

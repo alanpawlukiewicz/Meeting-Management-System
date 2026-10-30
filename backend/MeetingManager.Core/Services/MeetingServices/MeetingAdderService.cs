@@ -1,4 +1,4 @@
-﻿using MeetingManager.Core.DTO;
+﻿using MeetingManager.Core.DTO.MeetingDTOs;
 using MeetingManager.Core.Mappers;
 using MeetingManager.Core.ServiceContracts.MeetingServiceContracts;
 using MeetingManager.Domain.Entities;
@@ -33,7 +33,8 @@ namespace MeetingManager.Core.Services.MeetingServices
                 Date = request.Date,
                 EndTime = request.EndTime,
                 Place = request.Place,
-                StartTime = request.StartTime
+                StartTime = request.StartTime,
+                Title = request.Title
             };
 
             if (request.ParticipantIds != null)

@@ -1,8 +1,11 @@
-﻿namespace MeetingManager.Core.DTO
+﻿using MeetingManager.Core.DTO.UserDTOs;
+
+namespace MeetingManager.Core.DTO.MeetingDtos
 {
     public class MeetingDto
     {
         public Guid Id { get; set; }
+        public string Title { get; set; } = string.Empty;
         public Guid CreatorId { get; set; }
         public string CreatorName { get; set; } = string.Empty;
         public DateOnly Date { get; set; }

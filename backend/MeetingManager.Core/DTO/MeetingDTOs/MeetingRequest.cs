@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MeetingManager.Core.DTO
+namespace MeetingManager.Core.DTO.MeetingDTOs
 {
     public class MeetingRequest
     {
@@ -12,6 +12,8 @@ namespace MeetingManager.Core.DTO
         public TimeOnly EndTime { get; set; }
         [Required]
         public string Place { get; set; } = null!;
+        [Required]
+        public string Title { get; set; } = null!;
         public List<Guid>? ParticipantIds { get; set; }
     }
 }

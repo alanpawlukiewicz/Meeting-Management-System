@@ -1,5 +1,6 @@
 ﻿using MeetingManager.Core.Constants;
 using MeetingManager.Core.DTO;
+using MeetingManager.Core.DTO.UserDTOs;
 using MeetingManager.Core.ServiceContracts.UserServiceContracts;
 using MeetingManager.Infrastructure.Authorization.Attributes;
 using Microsoft.AspNetCore.Authorization;

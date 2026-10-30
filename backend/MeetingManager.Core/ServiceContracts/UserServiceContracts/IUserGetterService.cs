@@ -1,4 +1,5 @@
 ﻿using MeetingManager.Core.DTO;
+using MeetingManager.Core.DTO.UserDTOs;
 
 namespace MeetingManager.Core.ServiceContracts.UserServiceContracts
 {

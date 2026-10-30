@@ -1,5 +1,7 @@
 ﻿using MeetingManager.Core.Constants;
 using MeetingManager.Core.DTO;
+using MeetingManager.Core.DTO.MeetingDtos;
+using MeetingManager.Core.DTO.MeetingDTOs;
 using MeetingManager.Core.ServiceContracts;
 using MeetingManager.Core.ServiceContracts.MeetingServiceContracts;
 using MeetingManager.Infrastructure.Authorization.Attributes;

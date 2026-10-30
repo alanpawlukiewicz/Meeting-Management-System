@@ -1,4 +1,5 @@
-﻿using MeetingManager.Core.DTO;
+﻿using MeetingManager.Core.DTO.MeetingDtos;
+using MeetingManager.Core.DTO.MeetingDTOs;
 using MeetingManager.Domain.Entities;
 
 namespace MeetingManager.Core.Mappers
@@ -11,6 +12,7 @@ namespace MeetingManager.Core.Mappers
             {
                 Id = meeting.Id,
                 CreatorId = meeting.CreatorId,
+                Title = meeting.Title,
                 CreatorName = meeting.User?.UserName ?? string.Empty,
                 Date = meeting.Date,
                 EndTime = meeting.EndTime,
@@ -27,6 +29,7 @@ namespace MeetingManager.Core.Mappers
             {
                 Id = meeting.Id,
                 Date = meeting.Date,
+                Title = meeting.Title,
                 EndTime = meeting.EndTime,
                 StartTime = meeting.StartTime,
                 Place = meeting.Place
