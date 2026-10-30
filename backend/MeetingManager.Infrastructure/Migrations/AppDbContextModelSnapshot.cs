@@ -53,6 +53,12 @@ namespace MeetingManager.Infrastructure.Migrations
                         .HasColumnType("time without time zone")
                         .HasColumnName("start_time");
 
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("title");
+
                     b.HasKey("Id")
                         .HasName("pk_meetings");
 

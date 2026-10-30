@@ -10,6 +10,9 @@ namespace MeetingManager.Domain.Entities
         [Required]
         public Guid CreatorId { get; set; }
         [Required]
+        [MaxLength(200)]
+        public string Title { get; set; } = null!;
+        [Required]
         public DateOnly Date { get; set; }
         [Required]
         public TimeOnly StartTime { get; set; }
